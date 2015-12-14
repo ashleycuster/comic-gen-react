@@ -55109,7 +55109,7 @@ var AuthorActions = {
 
 module.exports = AuthorActions; 
 
-},{"../api/authorApi":210,"../constants/actionTypes":225,"../dispatcher/appDispatcher":226}],209:[function(require,module,exports){
+},{"../api/authorApi":210,"../constants/actionTypes":226,"../dispatcher/appDispatcher":227}],209:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher');
@@ -55129,7 +55129,7 @@ var InitializeActions = {
 
 module.exports = InitializeActions; 
 
-},{"../api/authorApi":210,"../constants/actionTypes":225,"../dispatcher/appDispatcher":226}],210:[function(require,module,exports){
+},{"../api/authorApi":210,"../constants/actionTypes":226,"../dispatcher/appDispatcher":227}],210:[function(require,module,exports){
 "use strict";
 
 //This file is mocking a web API by hitting hard coded data.
@@ -55394,7 +55394,7 @@ var AuthorPage = React.createClass({displayName: "AuthorPage",
 
 module.exports = AuthorPage; 
 
-},{"../../actions/authorActions":208,"../../stores/authorStore":229,"./authorList":215,"react":206,"react-router":34}],217:[function(require,module,exports){
+},{"../../actions/authorActions":208,"../../stores/authorStore":230,"./authorList":215,"react":206,"react-router":34}],217:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55491,7 +55491,7 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
 
 module.exports = ManageAuthorPage; 
 
-},{"../../actions/authorActions":208,"../../stores/authorStore":229,"./authorForm":214,"react":206,"react-router":34,"toastr":207}],218:[function(require,module,exports){
+},{"../../actions/authorActions":208,"../../stores/authorStore":230,"./authorForm":214,"react":206,"react-router":34,"toastr":207}],218:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55565,109 +55565,136 @@ module.exports = TextInput;
 "use strict"; 
 
 var React = require('react'); 
-var d3Chart = require('./d3Chart');
+var d3 = require('d3');
+var Rect = require('./rect'); 
 
-var Chart = React.createClass({displayName: "Chart",
-  propTypes: {
-    data: React.PropTypes.array,
-    domain: React.PropTypes.object
-  },
-
-  componentDidMount: function() {
-    var el = this.getDOMNode();
-    d3Chart.create(el, {
-      width: '100%',
-      height: '300px'
-    }, this.getChartState());
-  },
-
-  componentDidUpdate: function() {
-    var el = this.getDOMNode();
-    d3Chart.update(el, this.getChartState());
-  },
-
-  getChartState: function() {
+var Bar = React.createClass({displayName: "Bar",
+  getDefaultProps: function() {
     return {
-      data: this.props.data,
-      domain: this.props.domain
+      data: []
     };
   },
 
-  componentWillUnmount: function() {
-    var el = this.getDOMNode();
-    d3Chart.destroy(el);
+  shouldComponentUpdate: function(nextProps) {
+      return this.props.data !== nextProps.data;
   },
 
   render: function() {
+    var props = this.props;
+    var data = props.data.map(function(d) {
+      return d.y;
+    });
+
+    var yScale = d3.scale.linear()
+      .domain([0, d3.max(data)])
+      .range([0, this.props.height]);
+
+    var xScale = d3.scale.ordinal()
+      .domain(d3.range(this.props.data.length))
+      .rangeRoundBands([0, this.props.width], 0.05);
+
+    var bars = data.map(function(point, i) {
+      var height = yScale(point),
+          y = props.height - height,
+          width = xScale.rangeBand(),
+          x = xScale(i);
+
+      return (
+        React.createElement(Rect, {height: height, 
+              width: width, 
+              x: x, 
+              y: y, 
+              key: i})
+      );
+    });
+
     return (
-      React.createElement("div", {className: "Chart"})
+          React.createElement("g", null, bars)
+    );
+  }
+});  
+
+module.exports = Bar; 
+
+},{"./rect":223,"d3":3,"react":206}],221:[function(require,module,exports){
+"use strict"; 
+
+var React = require('react'); 
+// var d3Chart = require('./d3Chart');
+
+var Chart = React.createClass({displayName: "Chart",
+  // propTypes: {
+  //   data: React.PropTypes.array,
+  //   domain: React.PropTypes.object
+  // },
+
+  // componentDidMount: function() {
+  //   var el = this.getDOMNode();
+  //   d3Chart.create(el, {
+  //     width: '100%',
+  //     height: '300px'
+  //   }, this.getChartState());
+  // },
+
+  // componentDidUpdate: function() {
+  //   var el = this.getDOMNode();
+  //   d3Chart.update(el, this.getChartState());
+  // },
+
+  // getChartState: function() {
+  //   return {
+  //     data: this.props.data,
+  //     domain: this.props.domain
+  //   };
+  // },
+
+  // componentWillUnmount: function() {
+  //   var el = this.getDOMNode();
+  //   d3Chart.destroy(el);
+  // },
+
+  render: function() {
+    return (
+         React.createElement("svg", {width: this.props.width, 
+                 height: this.props.height}, 
+              this.props.children
+          ) 
     );
   }
 });
 
 module.exports = Chart; 
 
-},{"./d3Chart":221,"react":206}],221:[function(require,module,exports){
-"use strict"; 
-
-var React = require('react'); 
-var d3 = require('d3'); 
-
-var D3Chart = React.createClass({displayName: "D3Chart",
-
-  create: function(el, props, state) {
-    var svg = d3.select(el).append('svg')
-        .attr('class', 'd3')
-        .attr('width', props.width)
-        .attr('height', props.height);
-
-    svg.append('g')
-        .attr('class', 'd3-points');
-
-    this.update(el, state);
-  },
-
-  update: function(el, state) {
-    // Re-compute the scales, and render the data points
-    var scales = this._scales(el, state.domain);
-    this._drawPoints(el, scales, state.data);
-  },
-
-  destroy: function(el) {
-    // Any clean-up would go here
-    // in this example there is nothing to do
-  },
-
-  _drawPoints: function(el, scales, data) {
-    var g = d3.select(el).selectAll('.d3-points');
-
-    var point = g.selectAll('.d3-point')
-      .data(data, function(d) { return d.id; });
-
-    // ENTER
-    point.enter().append('circle')
-        .attr('class', 'd3-point');
-
-    // ENTER & UPDATE
-    point.attr('cx', function(d) { return scales.x(d.x); })
-        .attr('cy', function(d) { return scales.y(d.y); })
-        .attr('r', function(d) { return scales.z(d.z); });
-
-    // EXIT
-    point.exit()
-        .remove();
-  }
-
-});
-
-module.exports = D3Chart; 
-
-},{"d3":3,"react":206}],222:[function(require,module,exports){
+},{"react":206}],222:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
 var Router = require('react-router'); 
 var Chart = require('./chart'); 
+var Bar = require('./bar'); 
+
+var all = [
+  {x: 'a', y: 20}, 
+  {x: 'b', y: 14}, 
+  {x: 'c', y: 12}, 
+  {x: 'd', y: 19}, 
+  {x: 'e', y: 18}, 
+  {x: 'f', y: 15}, 
+  {x: 'g', y: 10}, 
+  {x: 'h', y: 14}
+];
+
+
+var filtered = [
+  {x: 'a', y: 9}, 
+  {x: 'b', y: 5}, 
+  {x: 'c', y: 6}, 
+  {x: 'd', y: 12}, 
+  {x: 'e', y: 10}, 
+  {x: 'f', y: 7}, 
+  {x: 'g', y: 4}, 
+  {x: 'h', y: 9}
+];
 
 var Dashboard = React.createClass({displayName: "Dashboard",
 	mixins: [
@@ -55676,16 +55703,130 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 	statics: {
 
 	},
+
+	getDefaultProps: function() {
+        return {
+          width: 500,
+          height: 500
+        };
+    },
+
+    getInitialState: function() {
+        return {
+          data: all
+        };
+    },
+
+    showAll: function() {
+      this.setState({data: all});
+    },
+
+    filter: function() {
+      this.setState({data: filtered});
+    },
+
 	render: function () {
 		return (
-				React.createElement(Chart, null) 
+			React.createElement("div", null, 
+				React.createElement("div", {className: "selection"}, 
+					React.createElement("ul", null, 
+						React.createElement("li", {onClick: this.showAll}, "All"), 
+						React.createElement("li", {onClick: this.filter}, "Filter")
+					)
+				), 
+				React.createElement("hr", null), 
+				React.createElement(Chart, {width: this.props.width, 
+                   height: this.props.height}, 
+                   React.createElement(Bar, {data: this.state.data, 
+						width: this.props.width, 
+						height: this.props.height})
+				)
+			)
 			);
 	}
 });
 
 module.exports = Dashboard; 
 
-},{"./chart":220,"react":206,"react-router":34}],223:[function(require,module,exports){
+},{"./bar":220,"./chart":221,"react":206,"react-router":34}],223:[function(require,module,exports){
+"use strict"; 
+
+var React = require('react'); 
+var d3 = require('d3'); 
+
+var SetIntervalMixin = {
+  componentWillMount: function() {
+    this.intervals = [];
+  },
+
+  setInterval: function() {
+    this.intervals.push(setInterval.apply(null, arguments));
+  },
+
+  componentWillUnmount: function() {
+    this.intervals.map(clearInterval);
+  }
+};
+
+
+var Rect = React.createClass({displayName: "Rect",
+    mixins: [SetIntervalMixin], 
+
+    getDefaultProps: function() {
+        return {
+            width: 0,
+            height: 0,
+            x: 0,
+            y: 0
+        };
+    },
+
+    getInitialState: function() {
+      return {
+        milliseconds: 0,
+        height: 0
+      };
+    },
+
+    shouldComponentUpdate: function(nextProps) {
+      return this.props.height !== this.state.height;
+    },
+
+    componentWillMount: function() {
+      console.log('will mount');
+    },
+
+    componentWillReceiveProps: function(nextProps) {
+      this.setState({milliseconds: 0, height: this.props.height});
+    },
+
+    componentDidMount: function() {
+      this.setInterval(this.tick, 10);
+    },
+
+    tick: function(start) {
+      this.setState({milliseconds: this.state.milliseconds + 10});
+    },
+
+    render: function() {
+		var easyeasy = d3.ease('back-out');
+		var height = this.state.height + (this.props.height - this.state.height) * easyeasy(Math.min(1, this.state.milliseconds / 1000));
+		var y = this.props.height - height + this.props.y;
+
+		return (
+			React.createElement("rect", {className: "bar", 
+				height: height, 
+				y: y, 
+				width: this.props.width, 
+				x: this.props.x}
+			)
+			);
+    }
+});
+
+module.exports = Rect; 
+
+},{"d3":3,"react":206}],224:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55706,7 +55847,7 @@ var Home = React.createClass({displayName: "Home",
 
 module.exports = Home; 
 
-},{"react":206,"react-router":34}],224:[function(require,module,exports){
+},{"react":206,"react-router":34}],225:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55726,7 +55867,7 @@ var NotFoundPage = React.createClass({displayName: "NotFoundPage",
 
 module.exports = NotFoundPage; 
 
-},{"react":206,"react-router":34}],225:[function(require,module,exports){
+},{"react":206,"react-router":34}],226:[function(require,module,exports){
 "use strict"; 
 
 var keyMirror = require('react/lib/keyMirror'); 
@@ -55737,7 +55878,7 @@ module.exports = keyMirror({
 	UPDATE_AUTHOR: null
 });
 
-},{"react/lib/keyMirror":191}],226:[function(require,module,exports){
+},{"react/lib/keyMirror":191}],227:[function(require,module,exports){
 /**
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -55755,7 +55896,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":4}],227:[function(require,module,exports){
+},{"flux":4}],228:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55769,7 +55910,7 @@ Router.run(routes, function(Handler) {
 	React.render(React.createElement(Handler, null), document.getElementById('app')); 
 });
 
-},{"./actions/initializeActions":209,"./routes":228,"react":206,"react-router":34}],228:[function(require,module,exports){
+},{"./actions/initializeActions":209,"./routes":229,"react":206,"react-router":34}],229:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55797,7 +55938,7 @@ var routes = (
 
 module.exports = routes; 
 
-},{"./components/about/aboutPage":212,"./components/app":213,"./components/authors/authorPage":216,"./components/authors/manageAuthorsPage":217,"./components/dashboard/dashboardPage":222,"./components/homePage":223,"./components/notFoundPage":224,"react":206,"react-router":34}],229:[function(require,module,exports){
+},{"./components/about/aboutPage":212,"./components/app":213,"./components/authors/authorPage":216,"./components/authors/manageAuthorsPage":217,"./components/dashboard/dashboardPage":222,"./components/homePage":224,"./components/notFoundPage":225,"react":206,"react-router":34}],230:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -55855,4 +55996,4 @@ Dispatcher.register(function(action){
 
 module.exports = AuthorStore; 
 
-},{"../constants/actionTypes":225,"../dispatcher/appDispatcher":226,"events":1,"lodash":8,"object-assign":9}]},{},[227]);
+},{"../constants/actionTypes":226,"../dispatcher/appDispatcher":227,"events":1,"lodash":8,"object-assign":9}]},{},[228]);
