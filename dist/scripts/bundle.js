@@ -55109,7 +55109,7 @@ var AuthorActions = {
 
 module.exports = AuthorActions; 
 
-},{"../api/authorApi":210,"../constants/actionTypes":226,"../dispatcher/appDispatcher":227}],209:[function(require,module,exports){
+},{"../api/authorApi":210,"../constants/actionTypes":227,"../dispatcher/appDispatcher":228}],209:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher');
@@ -55129,7 +55129,7 @@ var InitializeActions = {
 
 module.exports = InitializeActions; 
 
-},{"../api/authorApi":210,"../constants/actionTypes":226,"../dispatcher/appDispatcher":227}],210:[function(require,module,exports){
+},{"../api/authorApi":210,"../constants/actionTypes":227,"../dispatcher/appDispatcher":228}],210:[function(require,module,exports){
 "use strict";
 
 //This file is mocking a web API by hitting hard coded data.
@@ -55394,7 +55394,7 @@ var AuthorPage = React.createClass({displayName: "AuthorPage",
 
 module.exports = AuthorPage; 
 
-},{"../../actions/authorActions":208,"../../stores/authorStore":230,"./authorList":215,"react":206,"react-router":34}],217:[function(require,module,exports){
+},{"../../actions/authorActions":208,"../../stores/authorStore":231,"./authorList":215,"react":206,"react-router":34}],217:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55491,7 +55491,7 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
 
 module.exports = ManageAuthorPage; 
 
-},{"../../actions/authorActions":208,"../../stores/authorStore":230,"./authorForm":214,"react":206,"react-router":34,"toastr":207}],218:[function(require,module,exports){
+},{"../../actions/authorActions":208,"../../stores/authorStore":231,"./authorForm":214,"react":206,"react-router":34,"toastr":207}],218:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55616,7 +55616,7 @@ var Bar = React.createClass({displayName: "Bar",
 
 module.exports = Bar; 
 
-},{"./rect":223,"d3":3,"react":206}],221:[function(require,module,exports){
+},{"./rect":224,"d3":3,"react":206}],221:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55672,6 +55672,7 @@ var React = require('react');
 var Router = require('react-router'); 
 var Chart = require('./chart'); 
 var Bar = require('./bar'); 
+var Path = require('./path'); 
 
 var all = [
   {x: 'a', y: 20}, 
@@ -55696,6 +55697,56 @@ var filtered = [
   {x: 'h', y: 9}
 ];
 
+var width = 750; 
+var height = 600; 
+var radius = Math.min(width, height) / 2;
+
+var jsonData = { "name":"root", "children":[
+					{ "name":"account", "children":[
+							{ "name":"account", "children":[
+									{ "name":"account", "children":[
+											{ "name":"account", "children":[
+													{ "name":"account", "children":[
+															{ "name":"account", "size":22781},
+															{ "name":"end", "size":3311},
+															{ "name":"home", "size":906},
+															{ "name":"other", "size":1156},
+															{ "name":"product", "size":5969},
+															{ "name":"search", "size":692}]},
+															{ "name":"end", "size":7059},
+															{ "name":"home", "children":[
+																	{ "name":"account", "size":396},
+																	{ "name":"end", "size":316},
+																	{ "name":"home", "size":226},
+																	{ "name":"other", "size":87},
+																	{ "name":"product", "size":613},
+																	{ "name":"search", "size":245}]},
+																	{ "name":"other", "children":[
+																			{ "name":"account", "size":446},
+																			{ "name":"end", "size":229},
+																			{ "name":"home", "size":91},
+																			{ "name":"other", "size":804},
+																			{ "name":"product", "size":776},
+																			{ "name":"search", "size":48}]},
+																			{ "name":"product", "children":[
+																				{ "name":"account", "size":3892},
+																				{ "name":"end", "size":3250},
+																				{ "name":"home", "size":531},
+																				{ "name":"other", "size":252},
+																				{ "name":"product", "size":4876},
+																				{ "name":"search", "size":476}]},
+																				{ "name":"search", "children":[
+																					{ "name":"account", "size":521},
+																					{ "name":"end", "size":39},
+																					{ "name":"home", "size":7},
+																					{ "name":"other", "size":8},
+																					{ "name":"product", "size":536},
+																					{ "name":"search", "size":219}
+																				]
+																				}
+																				]
+																			}]}]}]}]};
+
 var Dashboard = React.createClass({displayName: "Dashboard",
 	mixins: [
 		Router.Navigation
@@ -55706,23 +55757,24 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 
 	getDefaultProps: function() {
         return {
-          width: 500,
-          height: 500
+          width: width,
+          height: height,
+          radius: radius
         };
     },
 
     getInitialState: function() {
         return {
-          data: all
+          data: jsonData
         };
     },
 
     showAll: function() {
-      this.setState({data: all});
+      this.setState({data: jsonData});
     },
 
     filter: function() {
-      this.setState({data: filtered});
+      this.setState({data: jsonData});
     },
 
 	render: function () {
@@ -55737,7 +55789,7 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 				React.createElement("hr", null), 
 				React.createElement(Chart, {width: this.props.width, 
                    height: this.props.height}, 
-                   React.createElement(Bar, {data: this.state.data, 
+                   React.createElement(Path, {data: this.state.data, 
 						width: this.props.width, 
 						height: this.props.height})
 				)
@@ -55748,7 +55800,106 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 
 module.exports = Dashboard; 
 
-},{"./bar":220,"./chart":221,"react":206,"react-router":34}],223:[function(require,module,exports){
+},{"./bar":220,"./chart":221,"./path":223,"react":206,"react-router":34}],223:[function(require,module,exports){
+"use strict"; 
+
+var React = require('react'); 
+var d3 = require('d3'); 
+
+// Mapping of step names to colors.
+var colors = {
+  "home": "#5687d1",
+  "product": "#7b615c",
+  "search": "#de783b",
+  "account": "#6ab975",
+  "other": "#a173d1",
+  "end": "#bbbbbb"
+};
+
+var SetIntervalMixin = {
+  componentWillMount: function() {
+    this.intervals = [];
+  },
+
+  setInterval: function() {
+    this.intervals.push(setInterval.apply(null, arguments));
+  },
+
+  componentWillUnmount: function() {
+    this.intervals.map(clearInterval);
+  }
+};
+
+
+var Path = React.createClass({displayName: "Path",
+    mixins: [SetIntervalMixin], 
+
+    getDefaultProps: function() {
+        return {
+            width: 0,
+            height: 0,
+            x: 0,
+            y: 0
+        };
+    },
+
+    getInitialState: function() {
+      return {
+        milliseconds: 0,
+        height: 0
+      };
+    },
+
+    shouldComponentUpdate: function(nextProps) {
+      return this.props.endAngle !== this.state.endAngle;
+    },
+
+    componentWillMount: function() {
+      console.log('will mount');
+    },
+
+    componentWillReceiveProps: function(nextProps) {
+      this.setState({milliseconds: 0, height: this.props.height});
+    },
+
+    componentDidMount: function() {
+      this.setInterval(this.tick, 10);
+    },
+
+    tick: function(start) {
+      this.setState({milliseconds: this.state.milliseconds + 10});
+    },
+
+    render: function() {
+      console.log(this.props.data); 
+      var arc = d3.svg.arc()
+                      .startAngle(function(d) { return d.x; })
+                      .endAngle(function(d) { return d.x + d.dx; })
+                      .innerRadius(function(d) { return Math.sqrt(d.y); })
+                      .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
+
+      var display = this.props.data.depth ? null : "none";
+      var fill = colors[this.props.data.name]; 
+
+      var partition = d3.layout.partition()
+                                .size([2 * Math.PI, this.props.radius * this.props.radius])
+                                .value(function(d) { return d.size; });
+
+      return (
+        React.createElement("path", {className: "path", 
+          display: display, 
+          d: arc(this.props.data), 
+          "fill-rule": "evenodd", 
+          fill: fill, 
+          fillOpacity: 1}
+        )
+        );
+    }
+});
+
+module.exports = Path; 
+
+},{"d3":3,"react":206}],224:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55826,7 +55977,7 @@ var Rect = React.createClass({displayName: "Rect",
 
 module.exports = Rect; 
 
-},{"d3":3,"react":206}],224:[function(require,module,exports){
+},{"d3":3,"react":206}],225:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55847,7 +55998,7 @@ var Home = React.createClass({displayName: "Home",
 
 module.exports = Home; 
 
-},{"react":206,"react-router":34}],225:[function(require,module,exports){
+},{"react":206,"react-router":34}],226:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55867,7 +56018,7 @@ var NotFoundPage = React.createClass({displayName: "NotFoundPage",
 
 module.exports = NotFoundPage; 
 
-},{"react":206,"react-router":34}],226:[function(require,module,exports){
+},{"react":206,"react-router":34}],227:[function(require,module,exports){
 "use strict"; 
 
 var keyMirror = require('react/lib/keyMirror'); 
@@ -55878,7 +56029,7 @@ module.exports = keyMirror({
 	UPDATE_AUTHOR: null
 });
 
-},{"react/lib/keyMirror":191}],227:[function(require,module,exports){
+},{"react/lib/keyMirror":191}],228:[function(require,module,exports){
 /**
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -55896,7 +56047,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":4}],228:[function(require,module,exports){
+},{"flux":4}],229:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55910,7 +56061,7 @@ Router.run(routes, function(Handler) {
 	React.render(React.createElement(Handler, null), document.getElementById('app')); 
 });
 
-},{"./actions/initializeActions":209,"./routes":229,"react":206,"react-router":34}],229:[function(require,module,exports){
+},{"./actions/initializeActions":209,"./routes":230,"react":206,"react-router":34}],230:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55938,7 +56089,7 @@ var routes = (
 
 module.exports = routes; 
 
-},{"./components/about/aboutPage":212,"./components/app":213,"./components/authors/authorPage":216,"./components/authors/manageAuthorsPage":217,"./components/dashboard/dashboardPage":222,"./components/homePage":224,"./components/notFoundPage":225,"react":206,"react-router":34}],230:[function(require,module,exports){
+},{"./components/about/aboutPage":212,"./components/app":213,"./components/authors/authorPage":216,"./components/authors/manageAuthorsPage":217,"./components/dashboard/dashboardPage":222,"./components/homePage":225,"./components/notFoundPage":226,"react":206,"react-router":34}],231:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -55996,4 +56147,4 @@ Dispatcher.register(function(action){
 
 module.exports = AuthorStore; 
 
-},{"../constants/actionTypes":226,"../dispatcher/appDispatcher":227,"events":1,"lodash":8,"object-assign":9}]},{},[228]);
+},{"../constants/actionTypes":227,"../dispatcher/appDispatcher":228,"events":1,"lodash":8,"object-assign":9}]},{},[229]);
