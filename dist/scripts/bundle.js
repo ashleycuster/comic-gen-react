@@ -55987,10 +55987,8 @@ var Path = React.createClass({displayName: "Path",
       var display = this.state.nodes.depth ? null : "none";
       var fill = colors[this.state.nodes.name]; 
     
-      console.log(this.state.arc); 
-
       return (
-        React.createElement("g", null, 
+        React.createElement("g", {width: this.props.width, height: this.props.height, transform: "translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"}, 
           React.createElement("path", {className: "path", 
             display: this.state.nodes.depth ? null : "none", 
             d: this.state.arc, 
