@@ -55503,10 +55503,8 @@ var Header = React.createClass({displayName: "Header",
 		return (
 				React.createElement("nav", {className: "navbar navbar-default"}, 
 					React.createElement("div", {className: "container-fluid"}, 
-						React.createElement(Link, {to: "app", className: "navbar-brand"}, 
-							React.createElement("img", {src: "images/pluralsight_logo.png"})
-						), 
 						React.createElement("ul", {className: "nav navbar-nav"}, 
+							React.createElement("li", null, React.createElement(Link, {to: "app"}, "ReactD3")), 
 							React.createElement("li", null, React.createElement(Link, {to: "app"}, "Home")), 
 							React.createElement("li", null, React.createElement(Link, {to: "about"}, "About")), 
 							React.createElement("li", null, React.createElement(Link, {to: "dashboard"}, "Dashboard"))
@@ -55822,13 +55820,6 @@ var Dashboard = React.createClass({displayName: "Dashboard",
         };
     },
 
-    showAll: function() {
-      this.setState({data: jsonData});
-    },
-
-    filter: function() {
-      this.setState({data: jsonData});
-    },
 
 	render: function () {
 		return (

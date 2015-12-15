@@ -155,13 +155,6 @@ var Dashboard = React.createClass({
         };
     },
 
-    showAll: function() {
-      this.setState({data: jsonData});
-    },
-
-    filter: function() {
-      this.setState({data: jsonData});
-    },
 
 	render: function () {
 		return (
