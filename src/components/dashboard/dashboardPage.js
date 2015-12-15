@@ -17,7 +17,6 @@ var all = [
   {x: 'h', y: 14}
 ];
 
-
 var filtered = [
   {x: 'a', y: 9}, 
   {x: 'b', y: 5}, 
@@ -33,51 +32,105 @@ var width = 750;
 var height = 600; 
 var radius = Math.min(width, height) / 2;
 
-var jsonData = { "name":"root", "children":[
-					{ "name":"account", "children":[
-							{ "name":"account", "children":[
-									{ "name":"account", "children":[
-											{ "name":"account", "children":[
-													{ "name":"account", "children":[
-															{ "name":"account", "size":22781},
-															{ "name":"end", "size":3311},
-															{ "name":"home", "size":906},
-															{ "name":"other", "size":1156},
-															{ "name":"product", "size":5969},
-															{ "name":"search", "size":692}]},
-															{ "name":"end", "size":7059},
-															{ "name":"home", "children":[
-																	{ "name":"account", "size":396},
-																	{ "name":"end", "size":316},
-																	{ "name":"home", "size":226},
-																	{ "name":"other", "size":87},
-																	{ "name":"product", "size":613},
-																	{ "name":"search", "size":245}]},
-																	{ "name":"other", "children":[
-																			{ "name":"account", "size":446},
-																			{ "name":"end", "size":229},
-																			{ "name":"home", "size":91},
-																			{ "name":"other", "size":804},
-																			{ "name":"product", "size":776},
-																			{ "name":"search", "size":48}]},
-																			{ "name":"product", "children":[
-																				{ "name":"account", "size":3892},
-																				{ "name":"end", "size":3250},
-																				{ "name":"home", "size":531},
-																				{ "name":"other", "size":252},
-																				{ "name":"product", "size":4876},
-																				{ "name":"search", "size":476}]},
-																				{ "name":"search", "children":[
-																					{ "name":"account", "size":521},
-																					{ "name":"end", "size":39},
-																					{ "name":"home", "size":7},
-																					{ "name":"other", "size":8},
-																					{ "name":"product", "size":536},
-																					{ "name":"search", "size":219}
-																				]
-																				}
-																				]
-																			}]}]}]}]};
+var jsonData = {
+	"name": "root", 
+	"children": [
+		{ "name": "account", "children": [
+			{ "name": "account", "size": 10 }, 
+			{ "name": "home", "size": 5 }, 
+			{ "name": "product", "size": 15 }, 
+			{ "name": "search", "size": 20 }, 
+			{ "name": "other", "size": 7 }, 
+			{ "name": "end", "size": 10 }
+		] }, 
+		{ "name": "home", "children": [
+			{ "name": "account", "size": 10 }, 
+			{ "name": "home", "size": 5 }, 
+			{ "name": "product", "size": 15 }, 
+			{ "name": "search", "size": 20 }, 
+			{ "name": "other", "size": 7 }, 
+			{ "name": "end", "size": 10 }
+		] }, 
+		{ "name": "product", "children": [
+			{ "name": "account", "size": 10 }, 
+			{ "name": "home", "size": 5 }, 
+			{ "name": "product", "size": 15 }, 
+			{ "name": "search", "size": 20 }, 
+			{ "name": "other", "size": 7 }, 
+			{ "name": "end", "size": 10 }
+		] }, 
+		{ "name": "search", "children": [
+			{ "name": "account", "size": 10 }, 
+			{ "name": "home", "size": 5 }, 
+			{ "name": "product", "size": 15 }, 
+			{ "name": "search", "size": 20 }, 
+			{ "name": "other", "size": 7 }, 
+			{ "name": "end", "size": 10 }
+		] }, 
+		{ "name": "other", "children": [
+			{ "name": "account", "size": 10 }, 
+			{ "name": "home", "size": 5 }, 
+			{ "name": "product", "size": 15 }, 
+			{ "name": "search", "size": 20 }, 
+			{ "name": "other", "size": 7 }, 
+			{ "name": "end", "size": 10 }
+		] }, 
+		{ "name": "end", "children": [
+			{ "name": "account", "size": 10 }, 
+			{ "name": "home", "size": 5 }, 
+			{ "name": "product", "size": 15 }, 
+			{ "name": "search", "size": 20 }, 
+			{ "name": "other", "size": 7 }, 
+			{ "name": "end", "size": 10 }
+		] }
+	]
+};
+
+// var tempData = { "name":"root", "children":[
+// 					{ "name":"account", "children":[
+// 							{ "name":"account", "children":[
+// 									{ "name":"account", "children":[
+// 											{ "name":"account", "children":[
+// 													{ "name":"account", "children":[
+// 															{ "name":"account", "size":22781},
+// 															{ "name":"end", "size":3311},
+// 															{ "name":"home", "size":906},
+// 															{ "name":"other", "size":1156},
+// 															{ "name":"product", "size":5969},
+// 															{ "name":"search", "size":692}]},
+// 															{ "name":"end", "size":7059},
+// 															{ "name":"home", "children":[
+// 																	{ "name":"account", "size":396},
+// 																	{ "name":"end", "size":316},
+// 																	{ "name":"home", "size":226},
+// 																	{ "name":"other", "size":87},
+// 																	{ "name":"product", "size":613},
+// 																	{ "name":"search", "size":245}]},
+// 																	{ "name":"other", "children":[
+// 																			{ "name":"account", "size":446},
+// 																			{ "name":"end", "size":229},
+// 																			{ "name":"home", "size":91},
+// 																			{ "name":"other", "size":804},
+// 																			{ "name":"product", "size":776},
+// 																			{ "name":"search", "size":48}]},
+// 																			{ "name":"product", "children":[
+// 																				{ "name":"account", "size":3892},
+// 																				{ "name":"end", "size":3250},
+// 																				{ "name":"home", "size":531},
+// 																				{ "name":"other", "size":252},
+// 																				{ "name":"product", "size":4876},
+// 																				{ "name":"search", "size":476}]},
+// 																				{ "name":"search", "children":[
+// 																					{ "name":"account", "size":521},
+// 																					{ "name":"end", "size":39},
+// 																					{ "name":"home", "size":7},
+// 																					{ "name":"other", "size":8},
+// 																					{ "name":"product", "size":536},
+// 																					{ "name":"search", "size":219}
+// 																				]
+// 																				}
+// 																				]
+// 																			}]}]}]}]};
 
 var Dashboard = React.createClass({
 	mixins: [
@@ -91,7 +144,8 @@ var Dashboard = React.createClass({
         return {
           width: width,
           height: height,
-          radius: radius
+          radius: radius,
+          jsonData: jsonData
         };
     },
 
@@ -121,8 +175,7 @@ var Dashboard = React.createClass({
 				<hr/>
 				<Chart width={this.props.width} 
                    height={this.props.height}>
-                   <Path data={this.state.data}
-						width={this.props.width}
+                   <Path width={this.props.width}
 						height={this.props.height} />
 				</Chart>
 			</div>

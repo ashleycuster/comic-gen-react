@@ -55685,7 +55685,6 @@ var all = [
   {x: 'h', y: 14}
 ];
 
-
 var filtered = [
   {x: 'a', y: 9}, 
   {x: 'b', y: 5}, 
@@ -55701,51 +55700,105 @@ var width = 750;
 var height = 600; 
 var radius = Math.min(width, height) / 2;
 
-var jsonData = { "name":"root", "children":[
-					{ "name":"account", "children":[
-							{ "name":"account", "children":[
-									{ "name":"account", "children":[
-											{ "name":"account", "children":[
-													{ "name":"account", "children":[
-															{ "name":"account", "size":22781},
-															{ "name":"end", "size":3311},
-															{ "name":"home", "size":906},
-															{ "name":"other", "size":1156},
-															{ "name":"product", "size":5969},
-															{ "name":"search", "size":692}]},
-															{ "name":"end", "size":7059},
-															{ "name":"home", "children":[
-																	{ "name":"account", "size":396},
-																	{ "name":"end", "size":316},
-																	{ "name":"home", "size":226},
-																	{ "name":"other", "size":87},
-																	{ "name":"product", "size":613},
-																	{ "name":"search", "size":245}]},
-																	{ "name":"other", "children":[
-																			{ "name":"account", "size":446},
-																			{ "name":"end", "size":229},
-																			{ "name":"home", "size":91},
-																			{ "name":"other", "size":804},
-																			{ "name":"product", "size":776},
-																			{ "name":"search", "size":48}]},
-																			{ "name":"product", "children":[
-																				{ "name":"account", "size":3892},
-																				{ "name":"end", "size":3250},
-																				{ "name":"home", "size":531},
-																				{ "name":"other", "size":252},
-																				{ "name":"product", "size":4876},
-																				{ "name":"search", "size":476}]},
-																				{ "name":"search", "children":[
-																					{ "name":"account", "size":521},
-																					{ "name":"end", "size":39},
-																					{ "name":"home", "size":7},
-																					{ "name":"other", "size":8},
-																					{ "name":"product", "size":536},
-																					{ "name":"search", "size":219}
-																				]
-																				}
-																				]
-																			}]}]}]}]};
+var jsonData = {
+	"name": "root", 
+	"children": [
+		{ "name": "account", "children": [
+			{ "name": "account", "size": 10 }, 
+			{ "name": "home", "size": 5 }, 
+			{ "name": "product", "size": 15 }, 
+			{ "name": "search", "size": 20 }, 
+			{ "name": "other", "size": 7 }, 
+			{ "name": "end", "size": 10 }
+		] }, 
+		{ "name": "home", "children": [
+			{ "name": "account", "size": 10 }, 
+			{ "name": "home", "size": 5 }, 
+			{ "name": "product", "size": 15 }, 
+			{ "name": "search", "size": 20 }, 
+			{ "name": "other", "size": 7 }, 
+			{ "name": "end", "size": 10 }
+		] }, 
+		{ "name": "product", "children": [
+			{ "name": "account", "size": 10 }, 
+			{ "name": "home", "size": 5 }, 
+			{ "name": "product", "size": 15 }, 
+			{ "name": "search", "size": 20 }, 
+			{ "name": "other", "size": 7 }, 
+			{ "name": "end", "size": 10 }
+		] }, 
+		{ "name": "search", "children": [
+			{ "name": "account", "size": 10 }, 
+			{ "name": "home", "size": 5 }, 
+			{ "name": "product", "size": 15 }, 
+			{ "name": "search", "size": 20 }, 
+			{ "name": "other", "size": 7 }, 
+			{ "name": "end", "size": 10 }
+		] }, 
+		{ "name": "other", "children": [
+			{ "name": "account", "size": 10 }, 
+			{ "name": "home", "size": 5 }, 
+			{ "name": "product", "size": 15 }, 
+			{ "name": "search", "size": 20 }, 
+			{ "name": "other", "size": 7 }, 
+			{ "name": "end", "size": 10 }
+		] }, 
+		{ "name": "end", "children": [
+			{ "name": "account", "size": 10 }, 
+			{ "name": "home", "size": 5 }, 
+			{ "name": "product", "size": 15 }, 
+			{ "name": "search", "size": 20 }, 
+			{ "name": "other", "size": 7 }, 
+			{ "name": "end", "size": 10 }
+		] }
+	]
+};
+
+// var tempData = { "name":"root", "children":[
+// 					{ "name":"account", "children":[
+// 							{ "name":"account", "children":[
+// 									{ "name":"account", "children":[
+// 											{ "name":"account", "children":[
+// 													{ "name":"account", "children":[
+// 															{ "name":"account", "size":22781},
+// 															{ "name":"end", "size":3311},
+// 															{ "name":"home", "size":906},
+// 															{ "name":"other", "size":1156},
+// 															{ "name":"product", "size":5969},
+// 															{ "name":"search", "size":692}]},
+// 															{ "name":"end", "size":7059},
+// 															{ "name":"home", "children":[
+// 																	{ "name":"account", "size":396},
+// 																	{ "name":"end", "size":316},
+// 																	{ "name":"home", "size":226},
+// 																	{ "name":"other", "size":87},
+// 																	{ "name":"product", "size":613},
+// 																	{ "name":"search", "size":245}]},
+// 																	{ "name":"other", "children":[
+// 																			{ "name":"account", "size":446},
+// 																			{ "name":"end", "size":229},
+// 																			{ "name":"home", "size":91},
+// 																			{ "name":"other", "size":804},
+// 																			{ "name":"product", "size":776},
+// 																			{ "name":"search", "size":48}]},
+// 																			{ "name":"product", "children":[
+// 																				{ "name":"account", "size":3892},
+// 																				{ "name":"end", "size":3250},
+// 																				{ "name":"home", "size":531},
+// 																				{ "name":"other", "size":252},
+// 																				{ "name":"product", "size":4876},
+// 																				{ "name":"search", "size":476}]},
+// 																				{ "name":"search", "children":[
+// 																					{ "name":"account", "size":521},
+// 																					{ "name":"end", "size":39},
+// 																					{ "name":"home", "size":7},
+// 																					{ "name":"other", "size":8},
+// 																					{ "name":"product", "size":536},
+// 																					{ "name":"search", "size":219}
+// 																				]
+// 																				}
+// 																				]
+// 																			}]}]}]}]};
 
 var Dashboard = React.createClass({displayName: "Dashboard",
 	mixins: [
@@ -55759,7 +55812,8 @@ var Dashboard = React.createClass({displayName: "Dashboard",
         return {
           width: width,
           height: height,
-          radius: radius
+          radius: radius,
+          jsonData: jsonData
         };
     },
 
@@ -55789,8 +55843,7 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 				React.createElement("hr", null), 
 				React.createElement(Chart, {width: this.props.width, 
                    height: this.props.height}, 
-                   React.createElement(Path, {data: this.state.data, 
-						width: this.props.width, 
+                   React.createElement(Path, {width: this.props.width, 
 						height: this.props.height})
 				)
 			)
@@ -55801,6 +55854,22 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 module.exports = Dashboard; 
 
 },{"./bar":220,"./chart":221,"./path":223,"react":206,"react-router":34}],223:[function(require,module,exports){
+/*
+ *
+ * This code was modified from the example found at http://bl.ocks.org/kerryrodden/7090426
+ * which is covered by the Apache v2.0 License. A copy of this license is as follows:
+ *    --- BEGIN ---
+ *    Copyright 2013 Google Inc. All Rights Reserved.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  --- END ---
+ * Developers: Do not remove this notification or license.
+ */
+
 "use strict"; 
 
 var React = require('react'); 
@@ -55816,82 +55885,126 @@ var colors = {
   "end": "#bbbbbb"
 };
 
-var SetIntervalMixin = {
-  componentWillMount: function() {
-    this.intervals = [];
-  },
-
-  setInterval: function() {
-    this.intervals.push(setInterval.apply(null, arguments));
-  },
-
-  componentWillUnmount: function() {
-    this.intervals.map(clearInterval);
+// Take a 2-column CSV and transform it into a hierarchical structure suitable
+// for a partition layout. The first column is a sequence of step names, from
+// root to leaf, separated by hyphens. The second column is a count of how 
+// often that sequence occurred.
+var buildHierarchy = function (csv) {
+  var root = {"name": "root", "children": []};
+  for (var i = 0; i < csv.length; i++) {
+    var sequence = csv[i][0];
+    var size = +csv[i][1];
+    if (isNaN(size)) { // e.g. if this is a header row
+      continue;
+    }
+    var parts = sequence.split("-");
+    var currentNode = root;
+    for (var j = 0; j < parts.length; j++) {
+      var children = currentNode["children"];
+      var nodeName = parts[j];
+      var childNode;
+      if (j + 1 < parts.length) {
+      // Not yet at the end of the sequence; move down the tree.
+      var foundChild = false;
+      for (var k = 0; k < children.length; k++) {
+        if (children[k]["name"] === nodeName) {
+          childNode = children[k];
+          foundChild = true;
+          break;
+        }
+      }
+      // If we don't already have a child node for this branch, create it.
+      if (!foundChild) {
+        childNode = {"name": nodeName, "children": []};
+        children.push(childNode);
+      }
+      currentNode = childNode;
+    }
+    else {
+    // Reached the end of the sequence; create a leaf node.
+    childNode = {"name": nodeName, "size": size};
+    children.push(childNode);
+    }
+    }
   }
+  return root;
 };
+
+var arc = d3.svg.arc()
+            .startAngle(function(d) { return d.x; })
+            .endAngle(function(d) { return d.x + d.dx; })
+            .innerRadius(function(d) { return Math.sqrt(d.y); })
+            .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
+
+
 
 
 var Path = React.createClass({displayName: "Path",
-    mixins: [SetIntervalMixin], 
 
-    getDefaultProps: function() {
-        return {
-            width: 0,
-            height: 0,
-            x: 0,
-            y: 0
-        };
-    },
-
-    getInitialState: function() {
+    getInitialState: function () { 
       return {
-        milliseconds: 0,
-        height: 0
+        nodes: {}, 
+        arc: arc, 
+        json: {}
       };
     },
 
-    shouldComponentUpdate: function(nextProps) {
-      return this.props.endAngle !== this.state.endAngle;
+    createNodes: function () {
+      var vm = this; 
+      // Use d3.text and d3.csv.parseRows so that we do not need to have a header
+      // row, and can receive the csv as an array of arrays.
+      d3.text("data/sample.csv", function(text) {
+        var csv = d3.csv.parseRows(text);
+        var json = buildHierarchy(csv);
+        vm.prepareNodes(json);
+      });
+
+      console.log('nodes: '); 
+      console.log(this.state.nodes); 
+
+      console.log('test arcs: '); 
+      var test = this.state.arc(this.state.nodes); 
+      console.log(test); 
     },
 
-    componentWillMount: function() {
-      console.log('will mount');
+    prepareNodes: function (json) {
+      var partition = d3.layout.partition()
+                          .size([2 * Math.PI, this.props.radius * this.props.radius])
+                          .value(function(d) { return d.size; });
+
+      // For efficiency, filter nodes to keep only those large enough to see.
+      var nodes = partition.nodes(json)
+          .filter(function(d) {
+          return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
+          });
+
+      var updateArc = this.state.arc(json); 
+
+      this.setState({arc: updateArc, json: json});
+
+      return this.setState({nodes: nodes});
     },
 
-    componentWillReceiveProps: function(nextProps) {
-      this.setState({milliseconds: 0, height: this.props.height});
-    },
-
-    componentDidMount: function() {
-      this.setInterval(this.tick, 10);
-    },
-
-    tick: function(start) {
-      this.setState({milliseconds: this.state.milliseconds + 10});
+    componentWillMount: function () {
+      this.createNodes(); 
     },
 
     render: function() {
-      console.log(this.props.data); 
-      var arc = d3.svg.arc()
-                      .startAngle(function(d) { return d.x; })
-                      .endAngle(function(d) { return d.x + d.dx; })
-                      .innerRadius(function(d) { return Math.sqrt(d.y); })
-                      .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
-
-      var display = this.props.data.depth ? null : "none";
-      var fill = colors[this.props.data.name]; 
-
-      var partition = d3.layout.partition()
-                                .size([2 * Math.PI, this.props.radius * this.props.radius])
-                                .value(function(d) { return d.size; });
+      var display = this.state.nodes.depth ? null : "none";
+      var fill = colors[this.state.nodes.name]; 
+    
+      // var test = arc(this.state.nodes); 
+      // console.log(test); 
 
       return (
-        React.createElement("path", {className: "path", 
-          display: display, 
-          d: arc(this.props.data), 
-          "fill-rule": "evenodd", 
-          fill: fill, 
-          fillOpacity: 1}
+        React.createElement("g", null, 
+          React.createElement("path", {className: "path", 
+            display: this.state.nodes.depth ? null : "none", 
+            d: this.state.arc, 
+            "fill-rule": "evenodd", 
+            fill: colors[this.state.nodes.name], 
+            fillOpacity: 1}
+          )
         )
         );
     }
