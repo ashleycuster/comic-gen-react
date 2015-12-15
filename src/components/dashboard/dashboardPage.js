@@ -166,12 +166,6 @@ var Dashboard = React.createClass({
 	render: function () {
 		return (
 			<div>
-				<div className="selection">
-					<ul>
-						<li onClick={this.showAll}>All</li>
-						<li onClick={this.filter}>Filter</li>
-					</ul>
-				</div>
 				<hr/>
 				<Chart width={this.props.width} 
                    height={this.props.height}>

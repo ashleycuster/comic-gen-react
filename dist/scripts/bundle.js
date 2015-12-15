@@ -55509,7 +55509,6 @@ var Header = React.createClass({displayName: "Header",
 						React.createElement("ul", {className: "nav navbar-nav"}, 
 							React.createElement("li", null, React.createElement(Link, {to: "app"}, "Home")), 
 							React.createElement("li", null, React.createElement(Link, {to: "about"}, "About")), 
-							React.createElement("li", null, React.createElement(Link, {to: "authors"}, "Authors")), 
 							React.createElement("li", null, React.createElement(Link, {to: "dashboard"}, "Dashboard"))
 						)
 					)
@@ -55834,12 +55833,6 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 	render: function () {
 		return (
 			React.createElement("div", null, 
-				React.createElement("div", {className: "selection"}, 
-					React.createElement("ul", null, 
-						React.createElement("li", {onClick: this.showAll}, "All"), 
-						React.createElement("li", {onClick: this.filter}, "Filter")
-					)
-				), 
 				React.createElement("hr", null), 
 				React.createElement(Chart, {width: this.props.width, 
                    height: this.props.height}, 
@@ -55985,15 +55978,15 @@ var Path = React.createClass({displayName: "Path",
 
     render: function() {
       var display = this.state.nodes.depth ? null : "none";
-      var fill = colors[this.state.nodes.name]; 
+      var fill = colors[this.state.json.name]; 
     
       return (
         React.createElement("g", {width: this.props.width, height: this.props.height, transform: "translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"}, 
-          React.createElement("path", {className: "path", 
-            display: this.state.nodes.depth ? null : "none", 
+          React.createElement("path", {
+            display: this.state.json.depth ? null : "none", 
             d: this.state.arc, 
             "fill-rule": "evenodd", 
-            fill: colors[this.state.nodes.name], 
+            fill: fill, 
             fillOpacity: 1}
           )
         )
@@ -56092,8 +56085,8 @@ var Home = React.createClass({displayName: "Home",
 	render: function () {
 		return (
 				React.createElement("div", {className: "jumbotron"}, 
-					React.createElement("h1", null, "Pluralsight Administration"), 
-					React.createElement("p", null, "React, Router, and Flux for ultra responsive web apps"), 
+					React.createElement("h1", null, "React and D3"), 
+					React.createElement("p", null, "React, Router, Flux, and D3 for ultra responsive web apps and data visualizations"), 
 					React.createElement(Link, {to: "about", className: "btn btn-primary btn-lg"}, "Learn More")
 				) 
 			);

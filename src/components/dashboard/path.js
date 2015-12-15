@@ -128,15 +128,15 @@ var Path = React.createClass({
 
     render: function() {
       var display = this.state.nodes.depth ? null : "none";
-      var fill = colors[this.state.nodes.name]; 
+      var fill = colors[this.state.json.name]; 
     
       return (
         <g width={this.props.width} height={this.props.height} transform={"translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"}>
-          <path className="path"
-            display={this.state.nodes.depth ? null : "none"}
+          <path
+            display={this.state.json.depth ? null : "none"}
             d={this.state.arc}
             fill-rule={"evenodd"}
-            fill={colors[this.state.nodes.name]}
+            fill={fill}
             fillOpacity={1} >
           </path>
         </g>
