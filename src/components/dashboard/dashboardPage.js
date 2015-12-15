@@ -176,7 +176,8 @@ var Dashboard = React.createClass({
 				<Chart width={this.props.width} 
                    height={this.props.height}>
                    <Path width={this.props.width}
-						height={this.props.height} />
+						height={this.props.height}
+						radius={this.props.radius} />
 				</Chart>
 			</div>
 			);

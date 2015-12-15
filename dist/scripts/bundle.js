@@ -55844,7 +55844,8 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 				React.createElement(Chart, {width: this.props.width, 
                    height: this.props.height}, 
                    React.createElement(Path, {width: this.props.width, 
-						height: this.props.height})
+						height: this.props.height, 
+						radius: this.props.radius})
 				)
 			)
 			);
@@ -55958,13 +55959,6 @@ var Path = React.createClass({displayName: "Path",
         var json = buildHierarchy(csv);
         vm.prepareNodes(json);
       });
-
-      console.log('nodes: '); 
-      console.log(this.state.nodes); 
-
-      console.log('test arcs: '); 
-      var test = this.state.arc(this.state.nodes); 
-      console.log(test); 
     },
 
     prepareNodes: function (json) {
@@ -55980,9 +55974,9 @@ var Path = React.createClass({displayName: "Path",
 
       var updateArc = this.state.arc(json); 
 
-      this.setState({arc: updateArc, json: json});
+      this.setState({arc: updateArc, json: json, nodes: nodes});
 
-      return this.setState({nodes: nodes});
+      return; 
     },
 
     componentWillMount: function () {
@@ -55993,8 +55987,7 @@ var Path = React.createClass({displayName: "Path",
       var display = this.state.nodes.depth ? null : "none";
       var fill = colors[this.state.nodes.name]; 
     
-      // var test = arc(this.state.nodes); 
-      // console.log(test); 
+      console.log(this.state.arc); 
 
       return (
         React.createElement("g", null, 
