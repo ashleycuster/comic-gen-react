@@ -5,7 +5,6 @@ var Router = require('react-router');
 var Chart = require('./chart'); 
 var Bar = require('./bar'); 
 var Path = require('./path'); 
-var D3Api = require('../../api/d3Api');
 var d3 = require('d3');
 
 var width = 750; 
@@ -57,60 +56,6 @@ var _buildHierarchy = function (csv) {
   return root;
 };
 
-// var jsonData = {
-// 	"name": "root", 
-// 	"children": [
-// 		{ "name": "account", "children": [
-// 			{ "name": "account", "size": 10 }, 
-// 			{ "name": "home", "size": 5 }, 
-// 			{ "name": "product", "size": 15 }, 
-// 			{ "name": "search", "size": 20 }, 
-// 			{ "name": "other", "size": 7 }, 
-// 			{ "name": "end", "size": 10 }
-// 		] }, 
-// 		{ "name": "home", "children": [
-// 			{ "name": "account", "size": 10 }, 
-// 			{ "name": "home", "size": 5 }, 
-// 			{ "name": "product", "size": 15 }, 
-// 			{ "name": "search", "size": 20 }, 
-// 			{ "name": "other", "size": 7 }, 
-// 			{ "name": "end", "size": 10 }
-// 		] }, 
-// 		{ "name": "product", "children": [
-// 			{ "name": "account", "size": 10 }, 
-// 			{ "name": "home", "size": 5 }, 
-// 			{ "name": "product", "size": 15 }, 
-// 			{ "name": "search", "size": 20 }, 
-// 			{ "name": "other", "size": 7 }, 
-// 			{ "name": "end", "size": 10 }
-// 		] }, 
-// 		{ "name": "search", "children": [
-// 			{ "name": "account", "size": 10 }, 
-// 			{ "name": "home", "size": 5 }, 
-// 			{ "name": "product", "size": 15 }, 
-// 			{ "name": "search", "size": 20 }, 
-// 			{ "name": "other", "size": 7 }, 
-// 			{ "name": "end", "size": 10 }
-// 		] }, 
-// 		{ "name": "other", "children": [
-// 			{ "name": "account", "size": 10 }, 
-// 			{ "name": "home", "size": 5 }, 
-// 			{ "name": "product", "size": 15 }, 
-// 			{ "name": "search", "size": 20 }, 
-// 			{ "name": "other", "size": 7 }, 
-// 			{ "name": "end", "size": 10 }
-// 		] }, 
-// 		{ "name": "end", "children": [
-// 			{ "name": "account", "size": 10 }, 
-// 			{ "name": "home", "size": 5 }, 
-// 			{ "name": "product", "size": 15 }, 
-// 			{ "name": "search", "size": 20 }, 
-// 			{ "name": "other", "size": 7 }, 
-// 			{ "name": "end", "size": 10 }
-// 		] }
-// 	]
-// }; 
-
 var Dashboard = React.createClass({
 	mixins: [
 		Router.Navigation
@@ -128,35 +73,35 @@ var Dashboard = React.createClass({
     },
 
     getInitialState: function() {
-        return {
-        	arcData: {json: {}, array: []}
-        };
-    },
+		return {
+			arcData: {json: {}, array: []}
+		};
+	},
 
     componentWillMount: function () {
-    	var vm = this; 
-    	var getData = function (successCallback) {
-			// Use d3.text and d3.csv.parseRows so that we do not need to have a header
-			// row, and can receive the csv as an array of arrays.
+		var vm = this;
+		var getData = function (successCallback) {
+		// Use d3.text and d3.csv.parseRows so that we do not need to have a header
+		// row, and can receive the csv as an array of arrays.
 			d3.text("data/sample.csv", function(text) {
 				var newArcData = { json: {}, array: [] };
 				var csv = d3.csv.parseRows(text);
 				var json = _buildHierarchy(csv);
 
 				var partition = d3.layout.partition()
-		    		.size([2 * Math.PI, radius * radius])
-		    		.value(function(d) { return d.size; });
+					.size([2 * Math.PI, radius * radius])
+					.value(function(d) { return d.size; });
 
-		    	// For efficiency, filter nodes to keep only those large enough to see.
-		    	var nodes = partition.nodes(json)
-		    		.filter(function(d) {
-		    		return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
+				// For efficiency, filter nodes to keep only those large enough to see.
+				var nodes = partition.nodes(json)
+					.filter(function(d) {
+						return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
 				});
 
-		    	newArcData.json = json; 
-		    	newArcData.array = nodes; 
+				newArcData.json = json; 
+				newArcData.array = nodes; 
 
-		    	successCallback(newArcData);
+				successCallback(newArcData);
 			});
 		};
 
@@ -165,19 +110,14 @@ var Dashboard = React.createClass({
 			setArcData.json = newArcData.json; 
 			setArcData.array = newArcData.array;
 			vm.setState({arcData: setArcData});
-			console.log("should have complete data..."); 
-			console.log(vm.state.arcData);
 		});
     },
 
     componentDidMount: function () {
-    	console.log('componentDidMount arcData: '); 
-    	console.log(this.state.arcData); 
+
     },
 
     render: function () {
-    	console.log('dashboard render arcData: ');
-    	console.log(this.state.arcData);
 		return (
 			<div>
 				<hr/>

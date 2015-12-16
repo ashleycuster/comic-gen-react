@@ -19,6 +19,7 @@
 var React = require('react'); 
 var d3 = require('d3'); 
 var _ = require('lodash');
+var uuid = require('node-uuid');
 
 // Mapping of step names to colors.
 var colors = {
@@ -26,8 +27,28 @@ var colors = {
   "berry": "#7b615c",
   "food": "#de783b",
   "vegetable": "#6ab975",
-  "green": "#a173d1",
-  "red": "#bbbbbb"
+  "green": "#6ab975",
+  "red": "#bbbbbb",
+  "stone": "#de783b",
+  "grain": "#7b615c",
+  "wheat": "#de783b",
+  "barley": "#5687d1", 
+  "rice": "#bbbbbb",
+  "tan": "#7b615c",
+  "brown": "#7b615c",
+  "broccoli": "#6ab975",
+  "kale": "#a173d1",
+  "black": "#bbbbbb",
+  "blue": "#5687d1",
+  "orange": "#de783b",
+  "purple": "#a173d1",
+  "strawberry": "#7b615c",
+  "raspberry": "#6ab975",
+  "blackberry": "#bbbbbb",
+  "blueberry": "#5687d1",
+  "apricot": "#de783b",
+  "peach": "#bbbbbb",
+  "plum": "#bbbbbb"
 };
 
 var arc = d3.svg.arc()
@@ -53,10 +74,6 @@ var Path = React.createClass({
     },
 
     render: function() {
-      console.log('path arcData: ');
-      console.log(this.props.arcData);
-      // var display = this.state.nodes.depth ? null : "none";
-      // var fill = colors[this.props.arcsJson.name]; 
       if (this.props.arcData.array.length < 1) {
         return (<g></g>);
       }
@@ -75,7 +92,8 @@ var Path = React.createClass({
         d: this.props.arc(node), 
         "fill-rule": "evenodd", 
         fillOpacity: 1, 
-        fill: colors[node.name]
+        fill: colors[node.name],
+        key: uuid.v4()
       };
       return (
         <path {...props}></path>
@@ -83,18 +101,4 @@ var Path = React.createClass({
     }
 });
 
-module.exports = Path; 
-
-            // display={this.props.arcsJson.depth ? null : "none"}
-            // d={this.props.arc(this.props.arcsArray)}
-            // fill-rule={"evenodd"}
-            // fill={fill}
-            // fillOpacity={1} 
-
-          // <path
-          //   display={this.state.json.depth ? null : "none"}
-          //   d={this.state.arc}
-          //   fill-rule={"evenodd"}
-          //   fill={fill}
-          //   fillOpacity={1} >
-          // </path>
+module.exports = Path;
