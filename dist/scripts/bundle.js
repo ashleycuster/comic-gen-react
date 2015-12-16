@@ -76700,7 +76700,7 @@ var Path = React.createClass({displayName: "Path",
       }
       else {
         return (
-          React.createElement("g", {width: this.props.width, height: this.props.height, transform: "translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"}, 
+          React.createElement("g", {className: "chart", width: this.props.width, height: this.props.height, transform: "translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"}, 
              this.props.arcData.array.map(this.renderPaths) 
           )
         );
@@ -76711,13 +76711,14 @@ var Path = React.createClass({displayName: "Path",
       var props = {
         display: node.depth ? null : "none", 
         d: this.props.arc(node), 
-        "fill-rule": "evenodd", 
-        fillOpacity: 1, 
+        "fill-rule": "evenodd",
+        stroke: "#fff",
+        fillOpacity: node.name !== "root" ? 1 : 0, 
         fill: colors[node.name],
         key: uuid.v4()
       };
       return (
-        React.createElement("path", React.__spread({},  props))
+        React.createElement("path", React.__spread({},  props, {"fill-rule": "evenodd"}))
       );
     }
 });

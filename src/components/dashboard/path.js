@@ -79,7 +79,7 @@ var Path = React.createClass({
       }
       else {
         return (
-          <g width={this.props.width} height={this.props.height} transform={"translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"}>
+          <g className="chart" width={this.props.width} height={this.props.height} transform={"translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"}>
             { this.props.arcData.array.map(this.renderPaths) }
           </g>
         );
@@ -90,13 +90,14 @@ var Path = React.createClass({
       var props = {
         display: node.depth ? null : "none", 
         d: this.props.arc(node), 
-        "fill-rule": "evenodd", 
-        fillOpacity: 1, 
+        "fill-rule": "evenodd",
+        stroke: "#fff",
+        fillOpacity: node.name !== "root" ? 1 : 0, 
         fill: colors[node.name],
         key: uuid.v4()
       };
       return (
-        <path {...props}></path>
+        <path {...props} fill-rule="evenodd"></path>
       );
     }
 });
