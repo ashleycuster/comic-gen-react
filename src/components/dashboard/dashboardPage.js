@@ -5,158 +5,179 @@ var Router = require('react-router');
 var Chart = require('./chart'); 
 var Bar = require('./bar'); 
 var Path = require('./path'); 
-
-var all = [
-  {x: 'a', y: 20}, 
-  {x: 'b', y: 14}, 
-  {x: 'c', y: 12}, 
-  {x: 'd', y: 19}, 
-  {x: 'e', y: 18}, 
-  {x: 'f', y: 15}, 
-  {x: 'g', y: 10}, 
-  {x: 'h', y: 14}
-];
-
-var filtered = [
-  {x: 'a', y: 9}, 
-  {x: 'b', y: 5}, 
-  {x: 'c', y: 6}, 
-  {x: 'd', y: 12}, 
-  {x: 'e', y: 10}, 
-  {x: 'f', y: 7}, 
-  {x: 'g', y: 4}, 
-  {x: 'h', y: 9}
-];
+var D3Api = require('../../api/d3Api');
+var d3 = require('d3');
 
 var width = 750; 
 var height = 600; 
 var radius = Math.min(width, height) / 2;
 
-var jsonData = {
-	"name": "root", 
-	"children": [
-		{ "name": "account", "children": [
-			{ "name": "account", "size": 10 }, 
-			{ "name": "home", "size": 5 }, 
-			{ "name": "product", "size": 15 }, 
-			{ "name": "search", "size": 20 }, 
-			{ "name": "other", "size": 7 }, 
-			{ "name": "end", "size": 10 }
-		] }, 
-		{ "name": "home", "children": [
-			{ "name": "account", "size": 10 }, 
-			{ "name": "home", "size": 5 }, 
-			{ "name": "product", "size": 15 }, 
-			{ "name": "search", "size": 20 }, 
-			{ "name": "other", "size": 7 }, 
-			{ "name": "end", "size": 10 }
-		] }, 
-		{ "name": "product", "children": [
-			{ "name": "account", "size": 10 }, 
-			{ "name": "home", "size": 5 }, 
-			{ "name": "product", "size": 15 }, 
-			{ "name": "search", "size": 20 }, 
-			{ "name": "other", "size": 7 }, 
-			{ "name": "end", "size": 10 }
-		] }, 
-		{ "name": "search", "children": [
-			{ "name": "account", "size": 10 }, 
-			{ "name": "home", "size": 5 }, 
-			{ "name": "product", "size": 15 }, 
-			{ "name": "search", "size": 20 }, 
-			{ "name": "other", "size": 7 }, 
-			{ "name": "end", "size": 10 }
-		] }, 
-		{ "name": "other", "children": [
-			{ "name": "account", "size": 10 }, 
-			{ "name": "home", "size": 5 }, 
-			{ "name": "product", "size": 15 }, 
-			{ "name": "search", "size": 20 }, 
-			{ "name": "other", "size": 7 }, 
-			{ "name": "end", "size": 10 }
-		] }, 
-		{ "name": "end", "children": [
-			{ "name": "account", "size": 10 }, 
-			{ "name": "home", "size": 5 }, 
-			{ "name": "product", "size": 15 }, 
-			{ "name": "search", "size": 20 }, 
-			{ "name": "other", "size": 7 }, 
-			{ "name": "end", "size": 10 }
-		] }
-	]
+// Take a 2-column CSV and transform it into a hierarchical structure suitable
+// for a partition layout. The first column is a sequence of step names, from
+// root to leaf, separated by hyphens. The second column is a count of how 
+// often that sequence occurred.
+var _buildHierarchy = function (csv) {
+  var root = {"name": "root", "children": []};
+  for (var i = 0; i < csv.length; i++) {
+    var sequence = csv[i][0];
+    var size = +csv[i][1];
+    if (isNaN(size)) { // e.g. if this is a header row
+      continue;
+    }
+    var parts = sequence.split("-");
+    var currentNode = root;
+    for (var j = 0; j < parts.length; j++) {
+      var children = currentNode["children"];
+      var nodeName = parts[j];
+      var childNode;
+      if (j + 1 < parts.length) {
+      // Not yet at the end of the sequence; move down the tree.
+      var foundChild = false;
+      for (var k = 0; k < children.length; k++) {
+        if (children[k]["name"] === nodeName) {
+          childNode = children[k];
+          foundChild = true;
+          break;
+        }
+      }
+      // If we don't already have a child node for this branch, create it.
+      if (!foundChild) {
+        childNode = {"name": nodeName, "children": []};
+        children.push(childNode);
+      }
+      currentNode = childNode;
+    }
+    else {
+    // Reached the end of the sequence; create a leaf node.
+    childNode = {"name": nodeName, "size": size};
+    children.push(childNode);
+    }
+    }
+  }
+  return root;
 };
 
-// var tempData = { "name":"root", "children":[
-// 					{ "name":"account", "children":[
-// 							{ "name":"account", "children":[
-// 									{ "name":"account", "children":[
-// 											{ "name":"account", "children":[
-// 													{ "name":"account", "children":[
-// 															{ "name":"account", "size":22781},
-// 															{ "name":"end", "size":3311},
-// 															{ "name":"home", "size":906},
-// 															{ "name":"other", "size":1156},
-// 															{ "name":"product", "size":5969},
-// 															{ "name":"search", "size":692}]},
-// 															{ "name":"end", "size":7059},
-// 															{ "name":"home", "children":[
-// 																	{ "name":"account", "size":396},
-// 																	{ "name":"end", "size":316},
-// 																	{ "name":"home", "size":226},
-// 																	{ "name":"other", "size":87},
-// 																	{ "name":"product", "size":613},
-// 																	{ "name":"search", "size":245}]},
-// 																	{ "name":"other", "children":[
-// 																			{ "name":"account", "size":446},
-// 																			{ "name":"end", "size":229},
-// 																			{ "name":"home", "size":91},
-// 																			{ "name":"other", "size":804},
-// 																			{ "name":"product", "size":776},
-// 																			{ "name":"search", "size":48}]},
-// 																			{ "name":"product", "children":[
-// 																				{ "name":"account", "size":3892},
-// 																				{ "name":"end", "size":3250},
-// 																				{ "name":"home", "size":531},
-// 																				{ "name":"other", "size":252},
-// 																				{ "name":"product", "size":4876},
-// 																				{ "name":"search", "size":476}]},
-// 																				{ "name":"search", "children":[
-// 																					{ "name":"account", "size":521},
-// 																					{ "name":"end", "size":39},
-// 																					{ "name":"home", "size":7},
-// 																					{ "name":"other", "size":8},
-// 																					{ "name":"product", "size":536},
-// 																					{ "name":"search", "size":219}
-// 																				]
-// 																				}
-// 																				]
-// 																			}]}]}]}]};
+// var jsonData = {
+// 	"name": "root", 
+// 	"children": [
+// 		{ "name": "account", "children": [
+// 			{ "name": "account", "size": 10 }, 
+// 			{ "name": "home", "size": 5 }, 
+// 			{ "name": "product", "size": 15 }, 
+// 			{ "name": "search", "size": 20 }, 
+// 			{ "name": "other", "size": 7 }, 
+// 			{ "name": "end", "size": 10 }
+// 		] }, 
+// 		{ "name": "home", "children": [
+// 			{ "name": "account", "size": 10 }, 
+// 			{ "name": "home", "size": 5 }, 
+// 			{ "name": "product", "size": 15 }, 
+// 			{ "name": "search", "size": 20 }, 
+// 			{ "name": "other", "size": 7 }, 
+// 			{ "name": "end", "size": 10 }
+// 		] }, 
+// 		{ "name": "product", "children": [
+// 			{ "name": "account", "size": 10 }, 
+// 			{ "name": "home", "size": 5 }, 
+// 			{ "name": "product", "size": 15 }, 
+// 			{ "name": "search", "size": 20 }, 
+// 			{ "name": "other", "size": 7 }, 
+// 			{ "name": "end", "size": 10 }
+// 		] }, 
+// 		{ "name": "search", "children": [
+// 			{ "name": "account", "size": 10 }, 
+// 			{ "name": "home", "size": 5 }, 
+// 			{ "name": "product", "size": 15 }, 
+// 			{ "name": "search", "size": 20 }, 
+// 			{ "name": "other", "size": 7 }, 
+// 			{ "name": "end", "size": 10 }
+// 		] }, 
+// 		{ "name": "other", "children": [
+// 			{ "name": "account", "size": 10 }, 
+// 			{ "name": "home", "size": 5 }, 
+// 			{ "name": "product", "size": 15 }, 
+// 			{ "name": "search", "size": 20 }, 
+// 			{ "name": "other", "size": 7 }, 
+// 			{ "name": "end", "size": 10 }
+// 		] }, 
+// 		{ "name": "end", "children": [
+// 			{ "name": "account", "size": 10 }, 
+// 			{ "name": "home", "size": 5 }, 
+// 			{ "name": "product", "size": 15 }, 
+// 			{ "name": "search", "size": 20 }, 
+// 			{ "name": "other", "size": 7 }, 
+// 			{ "name": "end", "size": 10 }
+// 		] }
+// 	]
+// }; 
 
 var Dashboard = React.createClass({
 	mixins: [
 		Router.Navigation
 	],
 	statics: {
-
 	},
 
 	getDefaultProps: function() {
         return {
           width: width,
           height: height,
-          radius: radius,
-          jsonData: jsonData
+          radius: radius
+          // arcData: {json: {}, array: {}}
         };
     },
 
     getInitialState: function() {
         return {
-          data: jsonData
+        	arcData: {json: {}, array: []}
         };
     },
 
+    componentWillMount: function () {
+    	var vm = this; 
+    	var getData = function (successCallback) {
+			// Use d3.text and d3.csv.parseRows so that we do not need to have a header
+			// row, and can receive the csv as an array of arrays.
+			d3.text("data/sample.csv", function(text) {
+				var newArcData = { json: {}, array: [] };
+				var csv = d3.csv.parseRows(text);
+				var json = _buildHierarchy(csv);
 
-	render: function () {
+				var partition = d3.layout.partition()
+		    		.size([2 * Math.PI, radius * radius])
+		    		.value(function(d) { return d.size; });
+
+		    	// For efficiency, filter nodes to keep only those large enough to see.
+		    	var nodes = partition.nodes(json)
+		    		.filter(function(d) {
+		    		return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
+				});
+
+		    	newArcData.json = json; 
+		    	newArcData.array = nodes; 
+
+		    	successCallback(newArcData);
+			});
+		};
+
+		getData(function (newArcData) {
+			var setArcData = {json: {}, array: []};
+			setArcData.json = newArcData.json; 
+			setArcData.array = newArcData.array;
+			vm.setState({arcData: setArcData});
+			console.log("should have complete data..."); 
+			console.log(vm.state.arcData);
+		});
+    },
+
+    componentDidMount: function () {
+    	console.log('componentDidMount arcData: '); 
+    	console.log(this.state.arcData); 
+    },
+
+    render: function () {
+    	console.log('dashboard render arcData: ');
+    	console.log(this.state.arcData);
 		return (
 			<div>
 				<hr/>
@@ -164,7 +185,8 @@ var Dashboard = React.createClass({
                    height={this.props.height}>
                    <Path width={this.props.width}
 						height={this.props.height}
-						radius={this.props.radius} />
+						radius={this.props.radius}
+						arcData={this.state.arcData} />
 				</Chart>
 			</div>
 			);
@@ -172,3 +194,5 @@ var Dashboard = React.createClass({
 });
 
 module.exports = Dashboard; 
+
+      //              

@@ -55109,7 +55109,7 @@ var AuthorActions = {
 
 module.exports = AuthorActions; 
 
-},{"../api/authorApi":210,"../constants/actionTypes":227,"../dispatcher/appDispatcher":228}],209:[function(require,module,exports){
+},{"../api/authorApi":210,"../constants/actionTypes":229,"../dispatcher/appDispatcher":230}],209:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher');
@@ -55129,7 +55129,7 @@ var InitializeActions = {
 
 module.exports = InitializeActions; 
 
-},{"../api/authorApi":210,"../constants/actionTypes":227,"../dispatcher/appDispatcher":228}],210:[function(require,module,exports){
+},{"../api/authorApi":210,"../constants/actionTypes":229,"../dispatcher/appDispatcher":230}],210:[function(require,module,exports){
 "use strict";
 
 //This file is mocking a web API by hitting hard coded data.
@@ -55206,6 +55206,115 @@ module.exports = {
 },{}],212:[function(require,module,exports){
 "use strict"; 
 
+var d3 = require('d3'); 
+var _ = require('lodash');
+
+var arcsJson = require('./d3Data').arcsJson; 
+var arcsArray = require('./d3Data').arcsArray; 
+var arcData = {json: {}, array: []};
+
+var _clone = function(item) {
+	return JSON.parse(JSON.stringify(item)); //return cloned copy so that the item is passed by value instead of by reference
+};
+
+// Take a 2-column CSV and transform it into a hierarchical structure suitable
+// for a partition layout. The first column is a sequence of step names, from
+// root to leaf, separated by hyphens. The second column is a count of how 
+// often that sequence occurred.
+var _buildHierarchy = function (csv) {
+  var root = {"name": "root", "children": []};
+  for (var i = 0; i < csv.length; i++) {
+    var sequence = csv[i][0];
+    var size = +csv[i][1];
+    if (isNaN(size)) { // e.g. if this is a header row
+      continue;
+    }
+    var parts = sequence.split("-");
+    var currentNode = root;
+    for (var j = 0; j < parts.length; j++) {
+      var children = currentNode["children"];
+      var nodeName = parts[j];
+      var childNode;
+      if (j + 1 < parts.length) {
+      // Not yet at the end of the sequence; move down the tree.
+      var foundChild = false;
+      for (var k = 0; k < children.length; k++) {
+        if (children[k]["name"] === nodeName) {
+          childNode = children[k];
+          foundChild = true;
+          break;
+        }
+      }
+      // If we don't already have a child node for this branch, create it.
+      if (!foundChild) {
+        childNode = {"name": nodeName, "children": []};
+        children.push(childNode);
+      }
+      currentNode = childNode;
+    }
+    else {
+    // Reached the end of the sequence; create a leaf node.
+    childNode = {"name": nodeName, "size": size};
+    children.push(childNode);
+    }
+    }
+  }
+  return root;
+};
+
+
+var D3Api = {
+
+	createNodes: function (radius) {
+		var getData = function (successCallback) {
+			// Use d3.text and d3.csv.parseRows so that we do not need to have a header
+			// row, and can receive the csv as an array of arrays.
+			d3.text("data/sample.csv", function(text) {
+				var newArcData = { json: {}, array: [] };
+				var csv = d3.csv.parseRows(text);
+				var json = _buildHierarchy(csv);
+
+				var partition = d3.layout.partition()
+		    		.size([2 * Math.PI, radius * radius])
+		    		.value(function(d) { return d.size; });
+
+		    	// For efficiency, filter nodes to keep only those large enough to see.
+		    	var nodes = partition.nodes(json)
+		    		.filter(function(d) {
+		    		return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
+				});
+
+		    	newArcData.json = json; 
+		    	newArcData.array = nodes; 
+
+		    	successCallback(newArcData);
+			});
+		};
+
+		getData(function (newArcData) {
+			console.log('getData data'); 
+	    	console.log(newArcData);
+			arcData.json = newArcData.json; 
+			arcData.array = newArcData.array;
+		});
+	},
+
+	getArcData: function () {
+    	return _clone(arcData);
+    }
+};
+
+module.exports = D3Api; 
+
+},{"./d3Data":213,"d3":3,"lodash":8}],213:[function(require,module,exports){
+module.exports = {
+	arcsJson: {}, 
+	arcsArray: []
+};
+
+},{}],214:[function(require,module,exports){
+"use strict"; 
+
 var React = require('react'); 
 
 var About = React.createClass({displayName: "About",
@@ -55242,7 +55351,7 @@ var About = React.createClass({displayName: "About",
 
 module.exports = About; 
 
-},{"react":206}],213:[function(require,module,exports){
+},{"react":206}],215:[function(require,module,exports){
 /*eslint-disable strict */
 
 var React = require('react'); 
@@ -55267,7 +55376,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App; 
 
-},{"./common/header":218,"jquery":7,"react":206,"react-router":34}],214:[function(require,module,exports){
+},{"./common/header":220,"jquery":7,"react":206,"react-router":34}],216:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55310,7 +55419,7 @@ var AuthorForm = React.createClass({displayName: "AuthorForm",
 
 module.exports = AuthorForm; 
 
-},{"../common/textInput":219,"react":206}],215:[function(require,module,exports){
+},{"../common/textInput":221,"react":206}],217:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55350,7 +55459,7 @@ var AuthorList = React.createClass({displayName: "AuthorList",
 
 module.exports = AuthorList; 
 
-},{"react":206,"react-router":34}],216:[function(require,module,exports){
+},{"react":206,"react-router":34}],218:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55394,7 +55503,7 @@ var AuthorPage = React.createClass({displayName: "AuthorPage",
 
 module.exports = AuthorPage; 
 
-},{"../../actions/authorActions":208,"../../stores/authorStore":231,"./authorList":215,"react":206,"react-router":34}],217:[function(require,module,exports){
+},{"../../actions/authorActions":208,"../../stores/authorStore":233,"./authorList":217,"react":206,"react-router":34}],219:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55491,7 +55600,7 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
 
 module.exports = ManageAuthorPage; 
 
-},{"../../actions/authorActions":208,"../../stores/authorStore":231,"./authorForm":214,"react":206,"react-router":34,"toastr":207}],218:[function(require,module,exports){
+},{"../../actions/authorActions":208,"../../stores/authorStore":233,"./authorForm":216,"react":206,"react-router":34,"toastr":207}],220:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55517,7 +55626,7 @@ var Header = React.createClass({displayName: "Header",
 
 module.exports = Header; 
 
-},{"react":206,"react-router":34}],219:[function(require,module,exports){
+},{"react":206,"react-router":34}],221:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55558,7 +55667,7 @@ var TextInput = React.createClass({displayName: "TextInput",
 
 module.exports = TextInput; 
 
-},{"react":206}],220:[function(require,module,exports){
+},{"react":206}],222:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55613,7 +55722,7 @@ var Bar = React.createClass({displayName: "Bar",
 
 module.exports = Bar; 
 
-},{"./rect":224,"d3":3,"react":206}],221:[function(require,module,exports){
+},{"./rect":226,"d3":3,"react":206}],223:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55662,7 +55771,7 @@ var Chart = React.createClass({displayName: "Chart",
 
 module.exports = Chart; 
 
-},{"react":206}],222:[function(require,module,exports){
+},{"react":206}],224:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -55670,211 +55779,18 @@ var Router = require('react-router');
 var Chart = require('./chart'); 
 var Bar = require('./bar'); 
 var Path = require('./path'); 
-
-var all = [
-  {x: 'a', y: 20}, 
-  {x: 'b', y: 14}, 
-  {x: 'c', y: 12}, 
-  {x: 'd', y: 19}, 
-  {x: 'e', y: 18}, 
-  {x: 'f', y: 15}, 
-  {x: 'g', y: 10}, 
-  {x: 'h', y: 14}
-];
-
-var filtered = [
-  {x: 'a', y: 9}, 
-  {x: 'b', y: 5}, 
-  {x: 'c', y: 6}, 
-  {x: 'd', y: 12}, 
-  {x: 'e', y: 10}, 
-  {x: 'f', y: 7}, 
-  {x: 'g', y: 4}, 
-  {x: 'h', y: 9}
-];
+var D3Api = require('../../api/d3Api');
+var d3 = require('d3');
 
 var width = 750; 
 var height = 600; 
 var radius = Math.min(width, height) / 2;
 
-var jsonData = {
-	"name": "root", 
-	"children": [
-		{ "name": "account", "children": [
-			{ "name": "account", "size": 10 }, 
-			{ "name": "home", "size": 5 }, 
-			{ "name": "product", "size": 15 }, 
-			{ "name": "search", "size": 20 }, 
-			{ "name": "other", "size": 7 }, 
-			{ "name": "end", "size": 10 }
-		] }, 
-		{ "name": "home", "children": [
-			{ "name": "account", "size": 10 }, 
-			{ "name": "home", "size": 5 }, 
-			{ "name": "product", "size": 15 }, 
-			{ "name": "search", "size": 20 }, 
-			{ "name": "other", "size": 7 }, 
-			{ "name": "end", "size": 10 }
-		] }, 
-		{ "name": "product", "children": [
-			{ "name": "account", "size": 10 }, 
-			{ "name": "home", "size": 5 }, 
-			{ "name": "product", "size": 15 }, 
-			{ "name": "search", "size": 20 }, 
-			{ "name": "other", "size": 7 }, 
-			{ "name": "end", "size": 10 }
-		] }, 
-		{ "name": "search", "children": [
-			{ "name": "account", "size": 10 }, 
-			{ "name": "home", "size": 5 }, 
-			{ "name": "product", "size": 15 }, 
-			{ "name": "search", "size": 20 }, 
-			{ "name": "other", "size": 7 }, 
-			{ "name": "end", "size": 10 }
-		] }, 
-		{ "name": "other", "children": [
-			{ "name": "account", "size": 10 }, 
-			{ "name": "home", "size": 5 }, 
-			{ "name": "product", "size": 15 }, 
-			{ "name": "search", "size": 20 }, 
-			{ "name": "other", "size": 7 }, 
-			{ "name": "end", "size": 10 }
-		] }, 
-		{ "name": "end", "children": [
-			{ "name": "account", "size": 10 }, 
-			{ "name": "home", "size": 5 }, 
-			{ "name": "product", "size": 15 }, 
-			{ "name": "search", "size": 20 }, 
-			{ "name": "other", "size": 7 }, 
-			{ "name": "end", "size": 10 }
-		] }
-	]
-};
-
-// var tempData = { "name":"root", "children":[
-// 					{ "name":"account", "children":[
-// 							{ "name":"account", "children":[
-// 									{ "name":"account", "children":[
-// 											{ "name":"account", "children":[
-// 													{ "name":"account", "children":[
-// 															{ "name":"account", "size":22781},
-// 															{ "name":"end", "size":3311},
-// 															{ "name":"home", "size":906},
-// 															{ "name":"other", "size":1156},
-// 															{ "name":"product", "size":5969},
-// 															{ "name":"search", "size":692}]},
-// 															{ "name":"end", "size":7059},
-// 															{ "name":"home", "children":[
-// 																	{ "name":"account", "size":396},
-// 																	{ "name":"end", "size":316},
-// 																	{ "name":"home", "size":226},
-// 																	{ "name":"other", "size":87},
-// 																	{ "name":"product", "size":613},
-// 																	{ "name":"search", "size":245}]},
-// 																	{ "name":"other", "children":[
-// 																			{ "name":"account", "size":446},
-// 																			{ "name":"end", "size":229},
-// 																			{ "name":"home", "size":91},
-// 																			{ "name":"other", "size":804},
-// 																			{ "name":"product", "size":776},
-// 																			{ "name":"search", "size":48}]},
-// 																			{ "name":"product", "children":[
-// 																				{ "name":"account", "size":3892},
-// 																				{ "name":"end", "size":3250},
-// 																				{ "name":"home", "size":531},
-// 																				{ "name":"other", "size":252},
-// 																				{ "name":"product", "size":4876},
-// 																				{ "name":"search", "size":476}]},
-// 																				{ "name":"search", "children":[
-// 																					{ "name":"account", "size":521},
-// 																					{ "name":"end", "size":39},
-// 																					{ "name":"home", "size":7},
-// 																					{ "name":"other", "size":8},
-// 																					{ "name":"product", "size":536},
-// 																					{ "name":"search", "size":219}
-// 																				]
-// 																				}
-// 																				]
-// 																			}]}]}]}]};
-
-var Dashboard = React.createClass({displayName: "Dashboard",
-	mixins: [
-		Router.Navigation
-	],
-	statics: {
-
-	},
-
-	getDefaultProps: function() {
-        return {
-          width: width,
-          height: height,
-          radius: radius,
-          jsonData: jsonData
-        };
-    },
-
-    getInitialState: function() {
-        return {
-          data: jsonData
-        };
-    },
-
-
-	render: function () {
-		return (
-			React.createElement("div", null, 
-				React.createElement("hr", null), 
-				React.createElement(Chart, {width: this.props.width, 
-                   height: this.props.height}, 
-                   React.createElement(Path, {width: this.props.width, 
-						height: this.props.height, 
-						radius: this.props.radius})
-				)
-			)
-			);
-	}
-});
-
-module.exports = Dashboard; 
-
-},{"./bar":220,"./chart":221,"./path":223,"react":206,"react-router":34}],223:[function(require,module,exports){
-/*
- *
- * This code was modified from the example found at http://bl.ocks.org/kerryrodden/7090426
- * which is covered by the Apache v2.0 License. A copy of this license is as follows:
- *    --- BEGIN ---
- *    Copyright 2013 Google Inc. All Rights Reserved.
- *
- *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
- *  --- END ---
- * Developers: Do not remove this notification or license.
- */
-
-"use strict"; 
-
-var React = require('react'); 
-var d3 = require('d3'); 
-
-// Mapping of step names to colors.
-var colors = {
-  "home": "#5687d1",
-  "product": "#7b615c",
-  "search": "#de783b",
-  "account": "#6ab975",
-  "other": "#a173d1",
-  "end": "#bbbbbb"
-};
-
 // Take a 2-column CSV and transform it into a hierarchical structure suitable
 // for a partition layout. The first column is a sequence of step names, from
 // root to leaf, separated by hyphens. The second column is a count of how 
 // often that sequence occurred.
-var buildHierarchy = function (csv) {
+var _buildHierarchy = function (csv) {
   var root = {"name": "root", "children": []};
   for (var i = 0; i < csv.length; i++) {
     var sequence = csv[i][0];
@@ -55915,6 +55831,179 @@ var buildHierarchy = function (csv) {
   return root;
 };
 
+// var jsonData = {
+// 	"name": "root", 
+// 	"children": [
+// 		{ "name": "account", "children": [
+// 			{ "name": "account", "size": 10 }, 
+// 			{ "name": "home", "size": 5 }, 
+// 			{ "name": "product", "size": 15 }, 
+// 			{ "name": "search", "size": 20 }, 
+// 			{ "name": "other", "size": 7 }, 
+// 			{ "name": "end", "size": 10 }
+// 		] }, 
+// 		{ "name": "home", "children": [
+// 			{ "name": "account", "size": 10 }, 
+// 			{ "name": "home", "size": 5 }, 
+// 			{ "name": "product", "size": 15 }, 
+// 			{ "name": "search", "size": 20 }, 
+// 			{ "name": "other", "size": 7 }, 
+// 			{ "name": "end", "size": 10 }
+// 		] }, 
+// 		{ "name": "product", "children": [
+// 			{ "name": "account", "size": 10 }, 
+// 			{ "name": "home", "size": 5 }, 
+// 			{ "name": "product", "size": 15 }, 
+// 			{ "name": "search", "size": 20 }, 
+// 			{ "name": "other", "size": 7 }, 
+// 			{ "name": "end", "size": 10 }
+// 		] }, 
+// 		{ "name": "search", "children": [
+// 			{ "name": "account", "size": 10 }, 
+// 			{ "name": "home", "size": 5 }, 
+// 			{ "name": "product", "size": 15 }, 
+// 			{ "name": "search", "size": 20 }, 
+// 			{ "name": "other", "size": 7 }, 
+// 			{ "name": "end", "size": 10 }
+// 		] }, 
+// 		{ "name": "other", "children": [
+// 			{ "name": "account", "size": 10 }, 
+// 			{ "name": "home", "size": 5 }, 
+// 			{ "name": "product", "size": 15 }, 
+// 			{ "name": "search", "size": 20 }, 
+// 			{ "name": "other", "size": 7 }, 
+// 			{ "name": "end", "size": 10 }
+// 		] }, 
+// 		{ "name": "end", "children": [
+// 			{ "name": "account", "size": 10 }, 
+// 			{ "name": "home", "size": 5 }, 
+// 			{ "name": "product", "size": 15 }, 
+// 			{ "name": "search", "size": 20 }, 
+// 			{ "name": "other", "size": 7 }, 
+// 			{ "name": "end", "size": 10 }
+// 		] }
+// 	]
+// }; 
+
+var Dashboard = React.createClass({displayName: "Dashboard",
+	mixins: [
+		Router.Navigation
+	],
+	statics: {
+	},
+
+	getDefaultProps: function() {
+        return {
+          width: width,
+          height: height,
+          radius: radius
+          // arcData: {json: {}, array: {}}
+        };
+    },
+
+    getInitialState: function() {
+        return {
+        	arcData: {json: {}, array: []}
+        };
+    },
+
+    componentWillMount: function () {
+    	var vm = this; 
+    	var getData = function (successCallback) {
+			// Use d3.text and d3.csv.parseRows so that we do not need to have a header
+			// row, and can receive the csv as an array of arrays.
+			d3.text("data/sample.csv", function(text) {
+				var newArcData = { json: {}, array: [] };
+				var csv = d3.csv.parseRows(text);
+				var json = _buildHierarchy(csv);
+
+				var partition = d3.layout.partition()
+		    		.size([2 * Math.PI, radius * radius])
+		    		.value(function(d) { return d.size; });
+
+		    	// For efficiency, filter nodes to keep only those large enough to see.
+		    	var nodes = partition.nodes(json)
+		    		.filter(function(d) {
+		    		return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
+				});
+
+		    	newArcData.json = json; 
+		    	newArcData.array = nodes; 
+
+		    	successCallback(newArcData);
+			});
+		};
+
+		getData(function (newArcData) {
+			var setArcData = {json: {}, array: []};
+			setArcData.json = newArcData.json; 
+			setArcData.array = newArcData.array;
+			vm.setState({arcData: setArcData});
+			console.log("should have complete data..."); 
+			console.log(vm.state.arcData);
+		});
+    },
+
+    componentDidMount: function () {
+    	console.log('componentDidMount arcData: '); 
+    	console.log(this.state.arcData); 
+    },
+
+    render: function () {
+    	console.log('dashboard render arcData: ');
+    	console.log(this.state.arcData);
+		return (
+			React.createElement("div", null, 
+				React.createElement("hr", null), 
+				React.createElement(Chart, {width: this.props.width, 
+                   height: this.props.height}, 
+                   React.createElement(Path, {width: this.props.width, 
+						height: this.props.height, 
+						radius: this.props.radius, 
+						arcData: this.state.arcData})
+				)
+			)
+			);
+	}
+});
+
+module.exports = Dashboard; 
+
+      //              
+
+},{"../../api/d3Api":212,"./bar":222,"./chart":223,"./path":225,"d3":3,"react":206,"react-router":34}],225:[function(require,module,exports){
+/*
+ *
+ * This code was modified from the example found at http://bl.ocks.org/kerryrodden/7090426
+ * which is covered by the Apache v2.0 License. A copy of this license is as follows:
+ *    --- BEGIN ---
+ *    Copyright 2013 Google Inc. All Rights Reserved.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  --- END ---
+ * Developers: Do not remove this notification or license.
+ */
+
+"use strict"; 
+
+var React = require('react'); 
+var d3 = require('d3'); 
+var _ = require('lodash');
+
+// Mapping of step names to colors.
+var colors = {
+  "fruit": "#5687d1",
+  "berry": "#7b615c",
+  "food": "#de783b",
+  "vegetable": "#6ab975",
+  "green": "#a173d1",
+  "red": "#bbbbbb"
+};
+
 var arc = d3.svg.arc()
             .startAngle(function(d) { return d.x; })
             .endAngle(function(d) { return d.x + d.dx; })
@@ -55923,71 +56012,68 @@ var arc = d3.svg.arc()
 
 
 
-
 var Path = React.createClass({displayName: "Path",
+  propTypes: {
+    height: React.PropTypes.number.isRequired, 
+    width: React.PropTypes.number.isRequired,
+    radius: React.PropTypes.number, 
+    arcData: React.PropTypes.object.isRequired
+  },
 
-    getInitialState: function () { 
+    getDefaultProps: function () { 
       return {
-        nodes: {}, 
-        arc: arc, 
-        json: {}
+        arc: arc
       };
     },
 
-    createNodes: function () {
-      var vm = this; 
-      // Use d3.text and d3.csv.parseRows so that we do not need to have a header
-      // row, and can receive the csv as an array of arrays.
-      d3.text("data/sample.csv", function(text) {
-        var csv = d3.csv.parseRows(text);
-        var json = buildHierarchy(csv);
-        vm.prepareNodes(json);
-      });
-    },
-
-    prepareNodes: function (json) {
-      var partition = d3.layout.partition()
-                          .size([2 * Math.PI, this.props.radius * this.props.radius])
-                          .value(function(d) { return d.size; });
-
-      // For efficiency, filter nodes to keep only those large enough to see.
-      var nodes = partition.nodes(json)
-          .filter(function(d) {
-          return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
-          });
-
-      var updateArc = this.state.arc(json); 
-
-      this.setState({arc: updateArc, json: json, nodes: nodes});
-
-      return; 
-    },
-
-    componentWillMount: function () {
-      this.createNodes(); 
-    },
-
     render: function() {
-      var display = this.state.nodes.depth ? null : "none";
-      var fill = colors[this.state.json.name]; 
-    
-      return (
-        React.createElement("g", {width: this.props.width, height: this.props.height, transform: "translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"}, 
-          React.createElement("path", {
-            display: this.state.json.depth ? null : "none", 
-            d: this.state.arc, 
-            "fill-rule": "evenodd", 
-            fill: fill, 
-            fillOpacity: 1}
+      console.log('path arcData: ');
+      console.log(this.props.arcData);
+      // var display = this.state.nodes.depth ? null : "none";
+      // var fill = colors[this.props.arcsJson.name]; 
+      if (this.props.arcData.array.length < 1) {
+        return (React.createElement("g", null));
+      }
+      else {
+        return (
+          React.createElement("g", {width: this.props.width, height: this.props.height, transform: "translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"}, 
+             this.props.arcData.array.map(this.renderPaths) 
           )
-        )
         );
+      }
+    }, 
+
+    renderPaths: function (node) {
+      var props = {
+        display: node.depth ? null : "none", 
+        d: this.props.arc(node), 
+        "fill-rule": "evenodd", 
+        fillOpacity: 1, 
+        fill: colors[node.name]
+      };
+      return (
+        React.createElement("path", React.__spread({},  props))
+      );
     }
 });
 
 module.exports = Path; 
 
-},{"d3":3,"react":206}],224:[function(require,module,exports){
+            // display={this.props.arcsJson.depth ? null : "none"}
+            // d={this.props.arc(this.props.arcsArray)}
+            // fill-rule={"evenodd"}
+            // fill={fill}
+            // fillOpacity={1} 
+
+          // <path
+          //   display={this.state.json.depth ? null : "none"}
+          //   d={this.state.arc}
+          //   fill-rule={"evenodd"}
+          //   fill={fill}
+          //   fillOpacity={1} >
+          // </path>
+
+},{"d3":3,"lodash":8,"react":206}],226:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -56065,7 +56151,7 @@ var Rect = React.createClass({displayName: "Rect",
 
 module.exports = Rect; 
 
-},{"d3":3,"react":206}],225:[function(require,module,exports){
+},{"d3":3,"react":206}],227:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -56086,7 +56172,7 @@ var Home = React.createClass({displayName: "Home",
 
 module.exports = Home; 
 
-},{"react":206,"react-router":34}],226:[function(require,module,exports){
+},{"react":206,"react-router":34}],228:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -56106,7 +56192,7 @@ var NotFoundPage = React.createClass({displayName: "NotFoundPage",
 
 module.exports = NotFoundPage; 
 
-},{"react":206,"react-router":34}],227:[function(require,module,exports){
+},{"react":206,"react-router":34}],229:[function(require,module,exports){
 "use strict"; 
 
 var keyMirror = require('react/lib/keyMirror'); 
@@ -56117,7 +56203,7 @@ module.exports = keyMirror({
 	UPDATE_AUTHOR: null
 });
 
-},{"react/lib/keyMirror":191}],228:[function(require,module,exports){
+},{"react/lib/keyMirror":191}],230:[function(require,module,exports){
 /**
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -56135,7 +56221,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":4}],229:[function(require,module,exports){
+},{"flux":4}],231:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -56149,7 +56235,7 @@ Router.run(routes, function(Handler) {
 	React.render(React.createElement(Handler, null), document.getElementById('app')); 
 });
 
-},{"./actions/initializeActions":209,"./routes":230,"react":206,"react-router":34}],230:[function(require,module,exports){
+},{"./actions/initializeActions":209,"./routes":232,"react":206,"react-router":34}],232:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -56177,7 +56263,7 @@ var routes = (
 
 module.exports = routes; 
 
-},{"./components/about/aboutPage":212,"./components/app":213,"./components/authors/authorPage":216,"./components/authors/manageAuthorsPage":217,"./components/dashboard/dashboardPage":222,"./components/homePage":225,"./components/notFoundPage":226,"react":206,"react-router":34}],231:[function(require,module,exports){
+},{"./components/about/aboutPage":214,"./components/app":215,"./components/authors/authorPage":218,"./components/authors/manageAuthorsPage":219,"./components/dashboard/dashboardPage":224,"./components/homePage":227,"./components/notFoundPage":228,"react":206,"react-router":34}],233:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -56235,4 +56321,4 @@ Dispatcher.register(function(action){
 
 module.exports = AuthorStore; 
 
-},{"../constants/actionTypes":227,"../dispatcher/appDispatcher":228,"events":1,"lodash":8,"object-assign":9}]},{},[229]);
+},{"../constants/actionTypes":229,"../dispatcher/appDispatcher":230,"events":1,"lodash":8,"object-assign":9}]},{},[231]);
