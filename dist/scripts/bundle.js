@@ -76564,7 +76564,7 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 		var getData = function (successCallback) {
 		// Use d3.text and d3.csv.parseRows so that we do not need to have a header
 		// row, and can receive the csv as an array of arrays.
-			d3.text("data/sample.csv", function(text) {
+			d3.text("data/dhs.csv", function(text) {
 				var newArcData = { json: {}, array: [] };
 				var csv = d3.csv.parseRows(text);
 				var json = _buildHierarchy(csv);
@@ -76672,6 +76672,23 @@ var colors = {
   "plum": "#bbbbbb"
 };
 
+var colorsDHS = {
+  "customs": "#046b99",
+  "citizenship": "#00a6d2",
+  "coastguard": "#9bdaf1",
+  "fema": "#cd2026",
+  "immigration": "#981b1e",
+  "secretservice": "#cd2026",
+  "tsa": "#e59393"
+};
+
+var colorsTools = {
+  "score": "#0071bc",
+  "tools": "#205493",
+  "info": "#112e51",
+  "options": "#212121"
+};
+
 var arc = d3.svg.arc()
             .startAngle(function(d) { return d.x; })
             .endAngle(function(d) { return d.x + d.dx; })
@@ -76714,7 +76731,8 @@ var Path = React.createClass({displayName: "Path",
         "fill-rule": "evenodd",
         stroke: "#fff",
         fillOpacity: node.name !== "root" ? 1 : 0, 
-        fill: colors[node.name],
+        // fill: colors[node.name],
+        fill: node.name in colorsDHS ? colorsDHS[node.name] : colorsTools[node.name],
         key: uuid.v4()
       };
       return (

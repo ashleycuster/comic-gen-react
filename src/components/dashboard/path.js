@@ -51,6 +51,23 @@ var colors = {
   "plum": "#bbbbbb"
 };
 
+var colorsDHS = {
+  "customs": "#046b99",
+  "citizenship": "#00a6d2",
+  "coastguard": "#9bdaf1",
+  "fema": "#cd2026",
+  "immigration": "#981b1e",
+  "secretservice": "#cd2026",
+  "tsa": "#e59393"
+};
+
+var colorsTools = {
+  "score": "#0071bc",
+  "tools": "#205493",
+  "info": "#112e51",
+  "options": "#212121"
+};
+
 var arc = d3.svg.arc()
             .startAngle(function(d) { return d.x; })
             .endAngle(function(d) { return d.x + d.dx; })
@@ -93,7 +110,8 @@ var Path = React.createClass({
         "fill-rule": "evenodd",
         stroke: "#fff",
         fillOpacity: node.name !== "root" ? 1 : 0, 
-        fill: colors[node.name],
+        // fill: colors[node.name],
+        fill: node.name in colorsDHS ? colorsDHS[node.name] : colorsTools[node.name],
         key: uuid.v4()
       };
       return (
