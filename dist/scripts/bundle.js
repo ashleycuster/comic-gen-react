@@ -76684,8 +76684,8 @@ var colorsDHS = {
 
 var colorsTools = {
   "score": "#0071bc",
-  "tools": "#205493",
-  "info": "#112e51",
+  "info": "#205493",
+  "tools": "#112e51",
   "options": "#212121"
 };
 
