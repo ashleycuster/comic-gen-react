@@ -76564,7 +76564,7 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 		var getData = function (successCallback) {
 		// Use d3.text and d3.csv.parseRows so that we do not need to have a header
 		// row, and can receive the csv as an array of arrays.
-			d3.text("data/dhs.csv", function(text) {
+			d3.text("data/dhs_endpoints.csv", function(text) {
 				var newArcData = { json: {}, array: [] };
 				var csv = d3.csv.parseRows(text);
 				var json = _buildHierarchy(csv);
@@ -76644,6 +76644,12 @@ var uuid = require('node-uuid');
 
 // Mapping of step names to colors.
 var colors = {
+  "component1": "#0071bc",
+  "component2": "#205493",
+  "component3": "#112e51",
+  "component4": "#212121",
+  "subcomponent1": "#0071bc",
+  "subcomponent2": "#205493",
   "fruit": "#5687d1",
   "berry": "#7b615c",
   "food": "#de783b",
@@ -76689,6 +76695,70 @@ var colorsTools = {
   "options": "#212121"
 };
 
+// Calculate color based on number 0-100
+// 100 = all red, 50 = half red half green (yellow), 0 = all green
+var calculateColor = function (score) {
+  score = score % 100;
+  var max = 180;
+  var red = max; 
+  var green = max; 
+
+  var x = score - 50; 
+  if ( x > 0 ) {
+    green -= max * (x / 50);
+  }
+  else {
+    red += max * (x / 50); 
+  }
+
+  var redHex = Math.floor(red).toString(16);
+  var greenHex = Math.floor(green).toString(16);
+  redHex = redHex.length < 2 ? "0" + redHex : redHex;
+  greenHex = greenHex.length < 2 ? "0" + greenHex : greenHex;
+  var colorHex = "#" + redHex + greenHex + "00"; 
+  return colorHex; 
+};
+
+var dhsAgencyRiskScores = {
+  "customs": 90,
+  "customscomponent1": 80,
+  "subcomponent1": 80,
+  "subcomponent2": 0,
+  "customscomponent2": 5,
+  "customscomponent3": 3,
+  "customscomponent4": 2,
+  "citizenship": 25,
+  "citizenshipcomponent1": 10,
+  "citizenshipcomponent2": 5,
+  "citizenshipcomponent3": 5,
+  "citizenshipcomponent4": 5,
+  "coastguard": 83,
+  "coastguardcomponent1": 2,
+  "coastguardcomponent2": 0,
+  "coastguardcomponent3": 81,
+  "coastguardcomponent4": 0,
+  "fema": 58,
+  "femacomponent1": 30,
+  "femacomponent2": 10,
+  "femacomponent3": 10,
+  "femacomponent4": 8,
+  "immigration": 77,
+  "immigrationcomponent1": 40,
+  "immigrationcomponent2": 20,
+  "immigrationcomponent3": 10,
+  "immigrationcomponent4": 7,
+  "secretservice": 35,
+  "secretservicecomponent1": 20,
+  "secretservicecomponent2": 10,
+  "secretservicecomponent3": 5,
+  "secretservicecomponent4": 0,
+  "tsa": 95,
+  "tsacomponent1": 75,
+  "tsacomponent2": 15,
+  "tsacomponent3": 5,
+  "tsacomponent4": 0
+};
+
 var arc = d3.svg.arc()
             .startAngle(function(d) { return d.x; })
             .endAngle(function(d) { return d.x + d.dx; })
@@ -76732,7 +76802,8 @@ var Path = React.createClass({displayName: "Path",
         stroke: "#fff",
         fillOpacity: node.name !== "root" ? 1 : 0, 
         // fill: colors[node.name],
-        fill: node.name in colorsDHS ? colorsDHS[node.name] : colorsTools[node.name],
+        // fill: node.name in colorsDHS ? colorsDHS[node.name] : colors[node.name],
+        fill: calculateColor(dhsAgencyRiskScores[node.name]),
         key: uuid.v4()
       };
       return (
