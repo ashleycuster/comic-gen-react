@@ -76753,11 +76753,13 @@ var dhsAgencyRiskScores = {
   "secretservicecomponent3": 5,
   "secretservicecomponent4": 0,
   "tsa": 95,
-  "tsacomponent1": 75,
-  "tsacomponent2": 15,
+  "tsacomponent1": 65,
+  "tsacomponent2": 25,
   "tsacomponent3": 5,
   "tsacomponent4": 0
 };
+
+var highlight = ["tsa", "tsacomponent1", "tsacomponent2", "tsacomponent3", "tsacomponent4"];
 
 var arc = d3.svg.arc()
             .startAngle(function(d) { return d.x; })
@@ -76800,10 +76802,10 @@ var Path = React.createClass({displayName: "Path",
         d: this.props.arc(node), 
         "fill-rule": "evenodd",
         stroke: "#fff",
-        fillOpacity: node.name !== "root" ? 1 : 0, 
+        fillOpacity: highlight.indexOf(node.name) >= 0 ? 1 : 0.25, 
         // fill: colors[node.name],
         // fill: node.name in colorsDHS ? colorsDHS[node.name] : colors[node.name],
-        fill: calculateColor(dhsAgencyRiskScores[node.name]),
+        fill: node.name !== "root" ? calculateColor(dhsAgencyRiskScores[node.name]) : "#ffffff",
         key: uuid.v4()
       };
       return (
