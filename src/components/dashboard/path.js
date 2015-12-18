@@ -23,6 +23,16 @@ var uuid = require('node-uuid');
 
 // Mapping of step names to colors.
 var colors = {
+  "root": "#ffffff",
+  "reading": "#5687d1",
+  "other": "#de783b", 
+  "tools": "#a173d1",
+  "users": "#6ab975",
+  "endpoints": "#692c4b",
+  "progress": "#6b1f3c",
+  "incomplete": "#ffffff",
+  "procured": "#a2798f",
+  "deployed": "#6b1f3c",
   "component1": "#0071bc",
   "component2": "#205493",
   "component3": "#112e51",
@@ -100,45 +110,45 @@ var calculateColor = function (score) {
 
 var dhsAgencyRiskScores = {
   "customs": 90,
-  "customscomponent1": 80,
+  "customscomponent1": 98,
   "subcomponent1": 80,
   "subcomponent2": 0,
-  "customscomponent2": 5,
-  "customscomponent3": 3,
-  "customscomponent4": 2,
-  "citizenship": 25,
-  "citizenshipcomponent1": 10,
-  "citizenshipcomponent2": 5,
-  "citizenshipcomponent3": 5,
-  "citizenshipcomponent4": 5,
+  "customscomponent2": 95,
+  "customscomponent3": 85,
+  "customscomponent4": 40,
+  "citizenship": 77,
+  "citizenshipcomponent1": 63,
+  "citizenshipcomponent2": 90,
+  "citizenshipcomponent3": 45,
+  "citizenshipcomponent4": 17,
   "coastguard": 83,
-  "coastguardcomponent1": 2,
-  "coastguardcomponent2": 0,
+  "coastguardcomponent1": 70,
+  "coastguardcomponent2": 60,
   "coastguardcomponent3": 81,
   "coastguardcomponent4": 0,
   "fema": 58,
-  "femacomponent1": 30,
-  "femacomponent2": 10,
-  "femacomponent3": 10,
-  "femacomponent4": 8,
-  "immigration": 77,
-  "immigrationcomponent1": 40,
-  "immigrationcomponent2": 20,
+  "femacomponent1": 40,
+  "femacomponent2": 60,
+  "femacomponent3": 65,
+  "femacomponent4": 15,
+  "immigration": 25,
+  "immigrationcomponent1": 30,
+  "immigrationcomponent2": 60,
   "immigrationcomponent3": 10,
-  "immigrationcomponent4": 7,
+  "immigrationcomponent4": 22,
   "secretservice": 35,
   "secretservicecomponent1": 20,
-  "secretservicecomponent2": 10,
-  "secretservicecomponent3": 5,
-  "secretservicecomponent4": 0,
+  "secretservicecomponent2": 50,
+  "secretservicecomponent3": 15,
+  "secretservicecomponent4": 30,
   "tsa": 95,
-  "tsacomponent1": 65,
+  "tsacomponent1": 99,
   "tsacomponent2": 25,
-  "tsacomponent3": 5,
-  "tsacomponent4": 0
+  "tsacomponent3": 83,
+  "tsacomponent4": 54
 };
 
-var highlight = ["tsa", "tsacomponent1", "tsacomponent2", "tsacomponent3", "tsacomponent4"];
+var highlight = ["citizenship", "citizenshipcomponent2", "citizenshipcomponent1", "citizenshipcomponent3", "citizenshipcomponent4"];
 
 var arc = d3.svg.arc()
             .startAngle(function(d) { return d.x; })
@@ -181,10 +191,11 @@ var Path = React.createClass({
         d: this.props.arc(node), 
         "fill-rule": "evenodd",
         stroke: "#fff",
-        fillOpacity: highlight.indexOf(node.name) >= 0 ? 1 : 0.25, 
-        // fill: colors[node.name],
+        // fillOpacity: highlight.indexOf(node.name) >= 0 ? 1 : 0.25,
+        fillOpacity: 1,
+        fill: colors[node.name],
         // fill: node.name in colorsDHS ? colorsDHS[node.name] : colors[node.name],
-        fill: node.name !== "root" ? calculateColor(dhsAgencyRiskScores[node.name]) : "#ffffff",
+        // fill: node.name !== "root" ? calculateColor(dhsAgencyRiskScores[node.name]) : "#ffffff",
         key: uuid.v4()
       };
       return (
