@@ -193,9 +193,9 @@ var Path = React.createClass({
         stroke: "#fff",
         // fillOpacity: highlight.indexOf(node.name) >= 0 ? 1 : 0.25,
         fillOpacity: 1,
-        fill: colors[node.name],
+        // fill: colors[node.name],
         // fill: node.name in colorsDHS ? colorsDHS[node.name] : colors[node.name],
-        // fill: node.name !== "root" ? calculateColor(dhsAgencyRiskScores[node.name]) : "#ffffff",
+        fill: node.name !== "root" ? calculateColor(dhsAgencyRiskScores[node.name]) : "#ffffff",
         key: uuid.v4()
       };
       return (
