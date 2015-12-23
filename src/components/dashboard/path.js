@@ -175,8 +175,25 @@ var Path = React.createClass({
     getInitialState: function () {
       return {
         fillOpacity: 1,
-        selectedNode: ''
+        highlightedNodes: []
       };
+    },
+
+    // Given a node in a partition layout, return an array of all of its ancestor
+    // nodes, highest first, but excluding the root.
+    getAncestors: function (node) {
+      var path = [];
+      var current = node;
+      while (current.parent) {
+        path.unshift(current.name);
+        current = current.parent;
+      }
+      return path;
+    },
+
+    onCircleMouseLeave: function (event) {
+      console.log('mouseleave');
+      this.state({fillOpacity: 1});
     },
 
     render: function() {
@@ -185,15 +202,20 @@ var Path = React.createClass({
       }
       else {
         return (
-          <g className="chart" width={this.props.width} height={this.props.height} transform={"translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"}>
-            { this.props.arcData.array.map(this.renderPaths) }
+          <g className="chart" 
+              width={this.props.width} 
+              height={this.props.height} 
+              transform={"translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"}
+              onMouseOut={this.onCircleMouseLeave} >
+              { this.props.arcData.array.map(this.renderPaths) }
           </g>
         );
       }
     },
 
-    onPathMouseOver: function (nodeName) {
-      this.setState({fillOpacity: 0.3, selectedNode: nodeName});
+    onPathMouseOver: function (node) {
+      var nodes = this.getAncestors(node);
+      this.setState({fillOpacity: 0.3, highlightedNodes: nodes});
     },
 
     renderPaths: function (node) {
@@ -204,13 +226,12 @@ var Path = React.createClass({
         "fill-rule": "evenodd",
         stroke: "#fff",
         // fillOpacity: highlight.indexOf(node.name) >= 0 ? 1 : 0.25,
-        fillOpacity: node.name === vm.state.selectedNode ? 1 : vm.state.fillOpacity,
+        fillOpacity: vm.state.highlightedNodes.indexOf(node.name) >= 0 ? 1 : vm.state.fillOpacity,
         // fill: colors[node.name],
         // fill: node.name in colorsDHS ? colorsDHS[node.name] : colors[node.name],
         fill: node.name !== "root" ? calculateColor(dhsAgencyRiskScores[node.name]) : "#ffffff",
         key: uuid.v4(),
-        onMouseOver: (function (nodename) {return function () { vm.onPathMouseOver(nodename); }; })(node.name)
-
+        onMouseOver: (function (selectedNode) {return function () { vm.onPathMouseOver(selectedNode); }; })(node)
       };
       return (
         <path {...props} fill-rule="evenodd"></path>
