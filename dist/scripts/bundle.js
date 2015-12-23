@@ -76564,7 +76564,7 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 		var getData = function (successCallback) {
 		// Use d3.text and d3.csv.parseRows so that we do not need to have a header
 		// row, and can receive the csv as an array of arrays.
-			d3.text("data/reading_room.csv", function(text) {
+			d3.text("data/dhs_endpoints.csv", function(text) {
 				var newArcData = { json: {}, array: [] };
 				var csv = d3.csv.parseRows(text);
 				var json = _buildHierarchy(csv);
@@ -76793,6 +76793,13 @@ var Path = React.createClass({displayName: "Path",
       };
     },
 
+    getInitialState: function () {
+      return {
+        fillOpacity: 1,
+        selectedNode: ''
+      };
+    },
+
     render: function() {
       if (this.props.arcData.array.length < 1) {
         return (React.createElement("g", null));
@@ -76804,20 +76811,26 @@ var Path = React.createClass({displayName: "Path",
           )
         );
       }
-    }, 
+    },
+
+    onPathMouseOver: function (nodeName) {
+      this.setState({fillOpacity: 0.3, selectedNode: nodeName});
+    },
 
     renderPaths: function (node) {
+      var vm = this;
       var props = {
         display: node.depth ? null : "none", 
         d: this.props.arc(node), 
         "fill-rule": "evenodd",
         stroke: "#fff",
         // fillOpacity: highlight.indexOf(node.name) >= 0 ? 1 : 0.25,
-        fillOpacity: 1,
-        fill: colors[node.name],
+        fillOpacity: node.name === vm.state.selectedNode ? 1 : vm.state.fillOpacity,
+        // fill: colors[node.name],
         // fill: node.name in colorsDHS ? colorsDHS[node.name] : colors[node.name],
-        // fill: node.name !== "root" ? calculateColor(dhsAgencyRiskScores[node.name]) : "#ffffff",
-        key: uuid.v4()
+        fill: node.name !== "root" ? calculateColor(dhsAgencyRiskScores[node.name]) : "#ffffff",
+        key: uuid.v4(),
+        onMouseOver: (function (nodename) {return function () { vm.onPathMouseOver(nodename); }; })(node.name)
       };
       return (
         React.createElement("path", React.__spread({},  props, {"fill-rule": "evenodd"}))

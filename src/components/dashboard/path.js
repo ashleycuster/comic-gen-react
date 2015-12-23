@@ -172,6 +172,13 @@ var Path = React.createClass({
       };
     },
 
+    getInitialState: function () {
+      return {
+        fillOpacity: 1,
+        selectedNode: ''
+      };
+    },
+
     render: function() {
       if (this.props.arcData.array.length < 1) {
         return (<g></g>);
@@ -183,20 +190,26 @@ var Path = React.createClass({
           </g>
         );
       }
-    }, 
+    },
+
+    onPathMouseOver: function (nodeName) {
+      this.setState({fillOpacity: 0.3, selectedNode: nodeName});
+    },
 
     renderPaths: function (node) {
+      var vm = this;
       var props = {
         display: node.depth ? null : "none", 
         d: this.props.arc(node), 
         "fill-rule": "evenodd",
         stroke: "#fff",
         // fillOpacity: highlight.indexOf(node.name) >= 0 ? 1 : 0.25,
-        fillOpacity: 1,
-        fill: colors[node.name],
+        fillOpacity: node.name === vm.state.selectedNode ? 1 : vm.state.fillOpacity,
+        // fill: colors[node.name],
         // fill: node.name in colorsDHS ? colorsDHS[node.name] : colors[node.name],
-        // fill: node.name !== "root" ? calculateColor(dhsAgencyRiskScores[node.name]) : "#ffffff",
-        key: uuid.v4()
+        fill: node.name !== "root" ? calculateColor(dhsAgencyRiskScores[node.name]) : "#ffffff",
+        key: uuid.v4(),
+        onMouseOver: (function (nodename) {return function () { vm.onPathMouseOver(nodename); }; })(node.name)
       };
       return (
         <path {...props} fill-rule="evenodd"></path>
