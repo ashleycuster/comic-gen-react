@@ -210,6 +210,7 @@ var Path = React.createClass({
         fill: node.name !== "root" ? calculateColor(dhsAgencyRiskScores[node.name]) : "#ffffff",
         key: uuid.v4(),
         onMouseOver: (function (nodename) {return function () { vm.onPathMouseOver(nodename); }; })(node.name)
+
       };
       return (
         <path {...props} fill-rule="evenodd"></path>
