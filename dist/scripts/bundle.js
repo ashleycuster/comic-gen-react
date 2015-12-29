@@ -75925,7 +75925,27 @@ var AuthorActions = {
 
 module.exports = AuthorActions; 
 
-},{"../api/authorApi":428,"../constants/actionTypes":445,"../dispatcher/appDispatcher":446}],427:[function(require,module,exports){
+},{"../api/authorApi":429,"../constants/actionTypes":446,"../dispatcher/appDispatcher":447}],427:[function(require,module,exports){
+"use strict"; 
+
+var Dispatcher = require('../dispatcher/appDispatcher'); 
+var ActionTypes = require('../constants/actionTypes'); 
+
+var CircleChartActions = {
+
+	updateAuthor: function (nodes) {
+		var updatedNodes = nodes; 
+
+		Dispatcher.dispatch({
+			actionType: ActionTypes.UPDATE_NODES,
+			nodes: updatedNodes
+		});
+	}
+}; 
+
+module.exports = CircleChartActions; 
+
+},{"../constants/actionTypes":446,"../dispatcher/appDispatcher":447}],428:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher');
@@ -75945,7 +75965,7 @@ var InitializeActions = {
 
 module.exports = InitializeActions; 
 
-},{"../api/authorApi":428,"../constants/actionTypes":445,"../dispatcher/appDispatcher":446}],428:[function(require,module,exports){
+},{"../api/authorApi":429,"../constants/actionTypes":446,"../dispatcher/appDispatcher":447}],429:[function(require,module,exports){
 "use strict";
 
 //This file is mocking a web API by hitting hard coded data.
@@ -75997,7 +76017,7 @@ var AuthorApi = {
 
 module.exports = AuthorApi;
 
-},{"./authorData":429,"lodash":225}],429:[function(require,module,exports){
+},{"./authorData":430,"lodash":225}],430:[function(require,module,exports){
 module.exports = {
 	authors: 
 	[
@@ -76019,7 +76039,7 @@ module.exports = {
 	]
 };
 
-},{}],430:[function(require,module,exports){
+},{}],431:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76058,7 +76078,7 @@ var About = React.createClass({displayName: "About",
 
 module.exports = About; 
 
-},{"react":424}],431:[function(require,module,exports){
+},{"react":424}],432:[function(require,module,exports){
 /*eslint-disable strict */
 
 var React = require('react'); 
@@ -76083,7 +76103,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App; 
 
-},{"./common/header":436,"jquery":224,"react":424,"react-router":252}],432:[function(require,module,exports){
+},{"./common/header":437,"jquery":224,"react":424,"react-router":252}],433:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76126,7 +76146,7 @@ var AuthorForm = React.createClass({displayName: "AuthorForm",
 
 module.exports = AuthorForm; 
 
-},{"../common/textInput":437,"react":424}],433:[function(require,module,exports){
+},{"../common/textInput":438,"react":424}],434:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76166,7 +76186,7 @@ var AuthorList = React.createClass({displayName: "AuthorList",
 
 module.exports = AuthorList; 
 
-},{"react":424,"react-router":252}],434:[function(require,module,exports){
+},{"react":424,"react-router":252}],435:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76210,7 +76230,7 @@ var AuthorPage = React.createClass({displayName: "AuthorPage",
 
 module.exports = AuthorPage; 
 
-},{"../../actions/authorActions":426,"../../stores/authorStore":449,"./authorList":433,"react":424,"react-router":252}],435:[function(require,module,exports){
+},{"../../actions/authorActions":426,"../../stores/authorStore":450,"./authorList":434,"react":424,"react-router":252}],436:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76307,7 +76327,7 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
 
 module.exports = ManageAuthorPage; 
 
-},{"../../actions/authorActions":426,"../../stores/authorStore":449,"./authorForm":432,"react":424,"react-router":252,"toastr":425}],436:[function(require,module,exports){
+},{"../../actions/authorActions":426,"../../stores/authorStore":450,"./authorForm":433,"react":424,"react-router":252,"toastr":425}],437:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76333,7 +76353,7 @@ var Header = React.createClass({displayName: "Header",
 
 module.exports = Header; 
 
-},{"react":424,"react-router":252}],437:[function(require,module,exports){
+},{"react":424,"react-router":252}],438:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76374,7 +76394,7 @@ var TextInput = React.createClass({displayName: "TextInput",
 
 module.exports = TextInput; 
 
-},{"react":424}],438:[function(require,module,exports){
+},{"react":424}],439:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76429,7 +76449,7 @@ var Bar = React.createClass({displayName: "Bar",
 
 module.exports = Bar; 
 
-},{"./rect":442,"d3":220,"react":424}],439:[function(require,module,exports){
+},{"./rect":443,"d3":220,"react":424}],440:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76478,7 +76498,7 @@ var Chart = React.createClass({displayName: "Chart",
 
 module.exports = Chart; 
 
-},{"react":424}],440:[function(require,module,exports){
+},{"react":424}],441:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76618,7 +76638,7 @@ module.exports = Dashboard;
 
       //              
 
-},{"./bar":438,"./chart":439,"./path":441,"d3":220,"react":424,"react-router":252}],441:[function(require,module,exports){
+},{"./bar":439,"./chart":440,"./path":442,"d3":220,"react":424,"react-router":252}],442:[function(require,module,exports){
 /*
  *
  * This code was modified from the example found at http://bl.ocks.org/kerryrodden/7090426
@@ -76641,6 +76661,9 @@ var React = require('react');
 var d3 = require('d3'); 
 var _ = require('lodash');
 var uuid = require('node-uuid');
+var CircleChartActions = require('../../actions/circleChartActions');
+var CircleChartStore = require('../../stores/circleChartStore');
+
 
 
 // Calculate color based on number 0-100
@@ -76736,6 +76759,18 @@ var Path = React.createClass({displayName: "Path",
       };
     },
 
+    // componentWillMount: function () {
+    //   CircleChartStore.addChangeListener(this._onChange);
+    // },
+
+    // componentWillUnmount: function () {
+    //   CircleChartStore.removeChangeListener(this._onChange); 
+    // },
+
+    // _onChange: function () {
+    //   this.setState({ highlightedNodes: CircleChartStore.getHighlightedNodes() }); 
+    // },
+
     // Given a node in a partition layout, return an array of all of its ancestor
     // nodes, highest first, but excluding the root.
     getAncestors: function (node) {
@@ -76794,7 +76829,7 @@ var Path = React.createClass({displayName: "Path",
 
 module.exports = Path;
 
-},{"d3":220,"lodash":225,"node-uuid":226,"react":424}],442:[function(require,module,exports){
+},{"../../actions/circleChartActions":427,"../../stores/circleChartStore":451,"d3":220,"lodash":225,"node-uuid":226,"react":424}],443:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76872,7 +76907,7 @@ var Rect = React.createClass({displayName: "Rect",
 
 module.exports = Rect; 
 
-},{"d3":220,"react":424}],443:[function(require,module,exports){
+},{"d3":220,"react":424}],444:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76893,7 +76928,7 @@ var Home = React.createClass({displayName: "Home",
 
 module.exports = Home; 
 
-},{"react":424,"react-router":252}],444:[function(require,module,exports){
+},{"react":424,"react-router":252}],445:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76913,7 +76948,7 @@ var NotFoundPage = React.createClass({displayName: "NotFoundPage",
 
 module.exports = NotFoundPage; 
 
-},{"react":424,"react-router":252}],445:[function(require,module,exports){
+},{"react":424,"react-router":252}],446:[function(require,module,exports){
 "use strict"; 
 
 var keyMirror = require('react/lib/keyMirror'); 
@@ -76925,7 +76960,7 @@ module.exports = keyMirror({
 	UPDATE_NODES: null
 });
 
-},{"react/lib/keyMirror":409}],446:[function(require,module,exports){
+},{"react/lib/keyMirror":409}],447:[function(require,module,exports){
 /**
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -76943,7 +76978,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":221}],447:[function(require,module,exports){
+},{"flux":221}],448:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76957,7 +76992,7 @@ Router.run(routes, function(Handler) {
 	React.render(React.createElement(Handler, null), document.getElementById('app')); 
 });
 
-},{"./actions/initializeActions":427,"./routes":448,"react":424,"react-router":252}],448:[function(require,module,exports){
+},{"./actions/initializeActions":428,"./routes":449,"react":424,"react-router":252}],449:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76985,7 +77020,7 @@ var routes = (
 
 module.exports = routes; 
 
-},{"./components/about/aboutPage":430,"./components/app":431,"./components/authors/authorPage":434,"./components/authors/manageAuthorsPage":435,"./components/dashboard/dashboardPage":440,"./components/homePage":443,"./components/notFoundPage":444,"react":424,"react-router":252}],449:[function(require,module,exports){
+},{"./components/about/aboutPage":431,"./components/app":432,"./components/authors/authorPage":435,"./components/authors/manageAuthorsPage":436,"./components/dashboard/dashboardPage":441,"./components/homePage":444,"./components/notFoundPage":445,"react":424,"react-router":252}],450:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -77043,4 +77078,48 @@ Dispatcher.register(function(action){
 
 module.exports = AuthorStore; 
 
-},{"../constants/actionTypes":445,"../dispatcher/appDispatcher":446,"events":198,"lodash":225,"object-assign":227}]},{},[447]);
+},{"../constants/actionTypes":446,"../dispatcher/appDispatcher":447,"events":198,"lodash":225,"object-assign":227}],451:[function(require,module,exports){
+"use strict"; 
+
+var Dispatcher = require('../dispatcher/appDispatcher'); 
+var ActionTypes = require('../constants/actionTypes');
+var EventEmitter = require('events').EventEmitter; 
+var assign = require('object-assign'); 
+var _ = require('lodash');
+var CHANGE_EVENT = 'change'; 
+
+// private authors variable
+var _highlightedNodes = [];
+
+var CircleChartStore = assign({}, EventEmitter.prototype, {
+	addChangeListener: function (callback) {
+		this.on(CHANGE_EVENT, callback); 
+	},
+
+	removeChangeListener: function (callback) {
+		this.removeListener(CHANGE_EVENT, callback);
+	},
+
+	emitChange: function () {
+		this.emit(CHANGE_EVENT); 
+	}, 
+
+	getHighlightedNodes: function () {
+		return _highlightedNodes; 
+	}
+});
+
+Dispatcher.register(function(action){
+	switch(action.actionType) { 
+		case ActionTypes.UPDATE_NODES: 
+			_highlightedNodes = action.nodes; 
+			CircleChartStore.emitChange(); 
+			break; 
+		default: 
+			// no op
+	}
+});
+
+module.exports = CircleChartStore; 
+
+},{"../constants/actionTypes":446,"../dispatcher/appDispatcher":447,"events":198,"lodash":225,"object-assign":227}]},{},[448]);

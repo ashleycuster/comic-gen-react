@@ -20,6 +20,9 @@ var React = require('react');
 var d3 = require('d3'); 
 var _ = require('lodash');
 var uuid = require('node-uuid');
+var CircleChartActions = require('../../actions/circleChartActions');
+var CircleChartStore = require('../../stores/circleChartStore');
+
 
 
 // Calculate color based on number 0-100
@@ -114,6 +117,18 @@ var Path = React.createClass({
         highlightedNodes: []
       };
     },
+
+    // componentWillMount: function () {
+    //   CircleChartStore.addChangeListener(this._onChange);
+    // },
+
+    // componentWillUnmount: function () {
+    //   CircleChartStore.removeChangeListener(this._onChange); 
+    // },
+
+    // _onChange: function () {
+    //   this.setState({ highlightedNodes: CircleChartStore.getHighlightedNodes() }); 
+    // },
 
     // Given a node in a partition layout, return an array of all of its ancestor
     // nodes, highest first, but excluding the root.
