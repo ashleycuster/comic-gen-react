@@ -21,68 +21,6 @@ var d3 = require('d3');
 var _ = require('lodash');
 var uuid = require('node-uuid');
 
-// Mapping of step names to colors.
-var colors = {
-  "root": "#ffffff",
-  "reading": "#5687d1",
-  "other": "#de783b", 
-  "tools": "#a173d1",
-  "users": "#6ab975",
-  "endpoints": "#692c4b",
-  "progress": "#6b1f3c",
-  "incomplete": "#ffffff",
-  "procured": "#a2798f",
-  "deployed": "#6b1f3c",
-  "component1": "#0071bc",
-  "component2": "#205493",
-  "component3": "#112e51",
-  "component4": "#212121",
-  "subcomponent1": "#0071bc",
-  "subcomponent2": "#205493",
-  "fruit": "#5687d1",
-  "berry": "#7b615c",
-  "food": "#de783b",
-  "vegetable": "#6ab975",
-  "green": "#6ab975",
-  "red": "#bbbbbb",
-  "stone": "#de783b",
-  "grain": "#7b615c",
-  "wheat": "#de783b",
-  "barley": "#5687d1", 
-  "rice": "#bbbbbb",
-  "tan": "#7b615c",
-  "brown": "#7b615c",
-  "broccoli": "#6ab975",
-  "kale": "#a173d1",
-  "black": "#bbbbbb",
-  "blue": "#5687d1",
-  "orange": "#de783b",
-  "purple": "#a173d1",
-  "strawberry": "#7b615c",
-  "raspberry": "#6ab975",
-  "blackberry": "#bbbbbb",
-  "blueberry": "#5687d1",
-  "apricot": "#de783b",
-  "peach": "#bbbbbb",
-  "plum": "#bbbbbb"
-};
-
-var colorsDHS = {
-  "customs": "#046b99",
-  "citizenship": "#00a6d2",
-  "coastguard": "#9bdaf1",
-  "fema": "#cd2026",
-  "immigration": "#981b1e",
-  "secretservice": "#cd2026",
-  "tsa": "#e59393"
-};
-
-var colorsTools = {
-  "score": "#0071bc",
-  "info": "#205493",
-  "tools": "#112e51",
-  "options": "#212121"
-};
 
 // Calculate color based on number 0-100
 // 100 = all red, 50 = half red half green (yellow), 0 = all green
@@ -148,8 +86,6 @@ var dhsAgencyRiskScores = {
   "tsacomponent4": 54
 };
 
-var highlight = ["citizenship", "citizenshipcomponent2", "citizenshipcomponent1", "citizenshipcomponent3", "citizenshipcomponent4"];
-
 var arc = d3.svg.arc()
             .startAngle(function(d) { return d.x; })
             .endAngle(function(d) { return d.x + d.dx; })
@@ -191,9 +127,9 @@ var Path = React.createClass({
       return path;
     },
 
-    onCircleMouseLeave: function (event) {
-      console.log('mouseleave');
-      this.state({fillOpacity: 1});
+    handleMouseLeave: function (event) {
+      console.log('mouseleave g element');
+      console.log(event.type);
     },
 
     render: function() {
@@ -204,9 +140,8 @@ var Path = React.createClass({
         return (
           <g className="chart" 
               width={this.props.width} 
-              height={this.props.height} 
-              transform={"translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"}
-              onMouseOut={this.onCircleMouseLeave} >
+              height={this.props.height}
+              transform={"translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"} >
               { this.props.arcData.array.map(this.renderPaths) }
           </g>
         );
@@ -225,10 +160,7 @@ var Path = React.createClass({
         d: this.props.arc(node), 
         "fill-rule": "evenodd",
         stroke: "#fff",
-        // fillOpacity: highlight.indexOf(node.name) >= 0 ? 1 : 0.25,
         fillOpacity: vm.state.highlightedNodes.indexOf(node.name) >= 0 ? 1 : vm.state.fillOpacity,
-        // fill: colors[node.name],
-        // fill: node.name in colorsDHS ? colorsDHS[node.name] : colors[node.name],
         fill: node.name !== "root" ? calculateColor(dhsAgencyRiskScores[node.name]) : "#ffffff",
         key: uuid.v4(),
         onMouseOver: (function (selectedNode) {return function () { vm.onPathMouseOver(selectedNode); }; })(node)
