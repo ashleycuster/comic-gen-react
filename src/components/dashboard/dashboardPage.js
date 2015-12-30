@@ -5,7 +5,7 @@ var Router = require('react-router');
 var Chart = require('./chart'); 
 var Bar = require('./bar'); 
 var Path = require('./path');
-var InfoPanel = require('./infoPanel');
+var Info = require('./info');
 var d3 = require('d3');
 
 var width = 550; 
@@ -129,12 +129,10 @@ var Dashboard = React.createClass({
 							radius={this.props.radius}
 							arcData={this.state.arcData} />
 					</Chart>
-					<InfoPanel marginLeft={this.props.width} />
+					<Info marginLeft={this.props.width} />
 			</div>
 			);
 	}
 });
 
-module.exports = Dashboard; 
-
-      //              
+module.exports = Dashboard;         

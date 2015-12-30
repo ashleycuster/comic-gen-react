@@ -76507,7 +76507,7 @@ var Router = require('react-router');
 var Chart = require('./chart'); 
 var Bar = require('./bar'); 
 var Path = require('./path');
-var InfoPanel = require('./infoPanel');
+var Info = require('./info');
 var d3 = require('d3');
 
 var width = 550; 
@@ -76631,17 +76631,15 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 							radius: this.props.radius, 
 							arcData: this.state.arcData})
 					), 
-					React.createElement(InfoPanel, {marginLeft: this.props.width})
+					React.createElement(Info, {marginLeft: this.props.width})
 			)
 			);
 	}
 });
 
-module.exports = Dashboard; 
+module.exports = Dashboard;         
 
-      //              
-
-},{"./bar":439,"./chart":440,"./infoPanel":442,"./path":443,"d3":220,"react":424,"react-router":252}],442:[function(require,module,exports){
+},{"./bar":439,"./chart":440,"./info":442,"./path":443,"d3":220,"react":424,"react-router":252}],442:[function(require,module,exports){
 "use strict";
 
 var React = require('react'); 
@@ -76653,11 +76651,11 @@ var InfoPanel = React.createClass({displayName: "InfoPanel",
 
 	render: function () {
 		return (
-				React.createElement("div", {width: "2000px", style: { marginLeft: this.props.marginLeft}}, 
+				React.createElement("div", {width: "1000px", style: { marginLeft: this.props.marginLeft}}, 
 					React.createElement("h1", null, "Agency Name, Risk#"), 
 					React.createElement("table", {style: { marginTop: "20px", marginLeft: "20px"}}, 
 						React.createElement("tr", null, 
-							React.createElement("td", {style: {width: "1000px"}}, "Number of endpoints identified"), 
+							React.createElement("td", {style: {width: "500px"}}, "Number of endpoints identified"), 
 							React.createElement("td", {style: {width: "1000px"}}, "###")
 						), 
 						React.createElement("tr", null, 
