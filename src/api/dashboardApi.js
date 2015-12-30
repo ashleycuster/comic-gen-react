@@ -90,6 +90,7 @@ var DashboardApi = {
 		});
 	},
 
+	// calculateColor function written by Ashley Custer
 	// Calculate color based on number 0-100
 	// 100 = all red, 50 = half red half green (yellow), 0 = all green
 	calculateColor: function (name) {
@@ -101,10 +102,10 @@ var DashboardApi = {
 
 		var x = score - 50; 
 		if ( x > 0 ) {
-		green -= max * (x / 50);
+			green -= max * (x / 50);
 		}
 		else {
-		red += max * (x / 50); 
+			red += max * (x / 50); 
 		}
 
 		var redHex = Math.floor(red).toString(16);
