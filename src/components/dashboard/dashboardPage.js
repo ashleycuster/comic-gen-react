@@ -4,11 +4,12 @@ var React = require('react');
 var Router = require('react-router'); 
 var Chart = require('./chart'); 
 var Bar = require('./bar'); 
-var Path = require('./path'); 
+var Path = require('./path');
+var InfoPanel = require('./infoPanel');
 var d3 = require('d3');
 
-var width = 750; 
-var height = 600; 
+var width = 550; 
+var height = 400; 
 var radius = Math.min(width, height) / 2;
 
 // Take a 2-column CSV and transform it into a hierarchical structure suitable
@@ -121,13 +122,14 @@ var Dashboard = React.createClass({
 		return (
 			<div>
 				<hr/>
-				<Chart width={this.props.width} 
-                   height={this.props.height}>
-                   <Path width={this.props.width}
-						height={this.props.height}
-						radius={this.props.radius}
-						arcData={this.state.arcData} />
-				</Chart>
+					<Chart width={this.props.width}
+						height={this.props.height}>
+						<Path width={this.props.width}
+							height={this.props.height}
+							radius={this.props.radius}
+							arcData={this.state.arcData} />
+					</Chart>
+					<InfoPanel marginLeft={this.props.width} />
 			</div>
 			);
 	}

@@ -3,22 +3,32 @@
 var React = require('react'); 
 
 var InfoPanel = React.createClass({
+	propTypes: {
+		marginLeft: React.PropTypes.number.isRequired
+	},
+
 	render: function () {
 		return (
-				<div className="info-panel">
-					<h1>Agency Name, Risk Score</h1>
-					<table>
+				<div width="2000px" style={{ marginLeft: this.props.marginLeft }}>
+					<h1>Agency Name, Risk#</h1>
+					<table style={{ marginTop: "20px", marginLeft: "20px"}}>
 						<tr>
-							<td>Number of endpoints identified</td>
-							<td>###</td>
+							<td style={{width: "1000px"}}>Number of endpoints identified</td>
+							<td style={{width: "1000px"}}>###</td>
 						</tr>
 						<tr>
 							<td>Number of endpoints secured</td>
 							<td>###</td>
 						</tr>
+						<tr height="20px">
+							<td colSpan="2"></td>
+						</tr>
 						<tr>
 							<td>Number of users</td>
 							<td>###</td>
+						</tr>
+						<tr height="20px">
+							<td colSpan="2"></td>
 						</tr>
 						<tr>
 							<td>Licenses required</td>

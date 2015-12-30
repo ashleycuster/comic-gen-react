@@ -37,7 +37,8 @@ var Chart = React.createClass({
   render: function() {
     return (
          <svg width={this.props.width} 
-                 height={this.props.height} >
+                 height={this.props.height}
+                 style={{float: "left"}} >
               {this.props.children}
           </svg> 
     );

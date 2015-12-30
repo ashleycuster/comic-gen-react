@@ -75925,7 +75925,7 @@ var AuthorActions = {
 
 module.exports = AuthorActions; 
 
-},{"../api/authorApi":429,"../constants/actionTypes":446,"../dispatcher/appDispatcher":447}],427:[function(require,module,exports){
+},{"../api/authorApi":429,"../constants/actionTypes":447,"../dispatcher/appDispatcher":448}],427:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -75945,7 +75945,7 @@ var CircleChartActions = {
 
 module.exports = CircleChartActions; 
 
-},{"../constants/actionTypes":446,"../dispatcher/appDispatcher":447}],428:[function(require,module,exports){
+},{"../constants/actionTypes":447,"../dispatcher/appDispatcher":448}],428:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher');
@@ -75965,7 +75965,7 @@ var InitializeActions = {
 
 module.exports = InitializeActions; 
 
-},{"../api/authorApi":429,"../constants/actionTypes":446,"../dispatcher/appDispatcher":447}],429:[function(require,module,exports){
+},{"../api/authorApi":429,"../constants/actionTypes":447,"../dispatcher/appDispatcher":448}],429:[function(require,module,exports){
 "use strict";
 
 //This file is mocking a web API by hitting hard coded data.
@@ -76230,7 +76230,7 @@ var AuthorPage = React.createClass({displayName: "AuthorPage",
 
 module.exports = AuthorPage; 
 
-},{"../../actions/authorActions":426,"../../stores/authorStore":450,"./authorList":434,"react":424,"react-router":252}],436:[function(require,module,exports){
+},{"../../actions/authorActions":426,"../../stores/authorStore":451,"./authorList":434,"react":424,"react-router":252}],436:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76327,7 +76327,7 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
 
 module.exports = ManageAuthorPage; 
 
-},{"../../actions/authorActions":426,"../../stores/authorStore":450,"./authorForm":433,"react":424,"react-router":252,"toastr":425}],437:[function(require,module,exports){
+},{"../../actions/authorActions":426,"../../stores/authorStore":451,"./authorForm":433,"react":424,"react-router":252,"toastr":425}],437:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76449,7 +76449,7 @@ var Bar = React.createClass({displayName: "Bar",
 
 module.exports = Bar; 
 
-},{"./rect":443,"d3":220,"react":424}],440:[function(require,module,exports){
+},{"./rect":444,"d3":220,"react":424}],440:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76489,7 +76489,8 @@ var Chart = React.createClass({displayName: "Chart",
   render: function() {
     return (
          React.createElement("svg", {width: this.props.width, 
-                 height: this.props.height}, 
+                 height: this.props.height, 
+                 style: {float: "left"}}, 
               this.props.children
           ) 
     );
@@ -76505,11 +76506,12 @@ var React = require('react');
 var Router = require('react-router'); 
 var Chart = require('./chart'); 
 var Bar = require('./bar'); 
-var Path = require('./path'); 
+var Path = require('./path');
+var InfoPanel = require('./infoPanel');
 var d3 = require('d3');
 
-var width = 750; 
-var height = 600; 
+var width = 550; 
+var height = 400; 
 var radius = Math.min(width, height) / 2;
 
 // Take a 2-column CSV and transform it into a hierarchical structure suitable
@@ -76622,13 +76624,14 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 		return (
 			React.createElement("div", null, 
 				React.createElement("hr", null), 
-				React.createElement(Chart, {width: this.props.width, 
-                   height: this.props.height}, 
-                   React.createElement(Path, {width: this.props.width, 
-						height: this.props.height, 
-						radius: this.props.radius, 
-						arcData: this.state.arcData})
-				)
+					React.createElement(Chart, {width: this.props.width, 
+						height: this.props.height}, 
+						React.createElement(Path, {width: this.props.width, 
+							height: this.props.height, 
+							radius: this.props.radius, 
+							arcData: this.state.arcData})
+					), 
+					React.createElement(InfoPanel, {marginLeft: this.props.width})
 			)
 			);
 	}
@@ -76638,7 +76641,60 @@ module.exports = Dashboard;
 
       //              
 
-},{"./bar":439,"./chart":440,"./path":442,"d3":220,"react":424,"react-router":252}],442:[function(require,module,exports){
+},{"./bar":439,"./chart":440,"./infoPanel":442,"./path":443,"d3":220,"react":424,"react-router":252}],442:[function(require,module,exports){
+"use strict";
+
+var React = require('react'); 
+
+var InfoPanel = React.createClass({displayName: "InfoPanel",
+	propTypes: {
+		marginLeft: React.PropTypes.number.isRequired
+	},
+
+	render: function () {
+		return (
+				React.createElement("div", {width: "2000px", style: { marginLeft: this.props.marginLeft}}, 
+					React.createElement("h1", null, "Agency Name, Risk#"), 
+					React.createElement("table", {style: { marginTop: "20px", marginLeft: "20px"}}, 
+						React.createElement("tr", null, 
+							React.createElement("td", {style: {width: "1000px"}}, "Number of endpoints identified"), 
+							React.createElement("td", {style: {width: "1000px"}}, "###")
+						), 
+						React.createElement("tr", null, 
+							React.createElement("td", null, "Number of endpoints secured"), 
+							React.createElement("td", null, "###")
+						), 
+						React.createElement("tr", {height: "20px"}, 
+							React.createElement("td", {colSpan: "2"})
+						), 
+						React.createElement("tr", null, 
+							React.createElement("td", null, "Number of users"), 
+							React.createElement("td", null, "###")
+						), 
+						React.createElement("tr", {height: "20px"}, 
+							React.createElement("td", {colSpan: "2"})
+						), 
+						React.createElement("tr", null, 
+							React.createElement("td", null, "Licenses required"), 
+							React.createElement("td", null, "###")
+						), 
+						React.createElement("tr", null, 
+							React.createElement("td", null, "Licenses procured"), 
+							React.createElement("td", null, "###")
+						), 
+						React.createElement("tr", null, 
+							React.createElement("td", null, "Licenses installed"), 
+							React.createElement("td", null, "###")
+						)
+					)
+				)
+			);
+	}
+});
+
+module.exports = InfoPanel; 
+
+},{"react":424}],443:[function(require,module,exports){
 /*
  *
  * This code was modified from the example found at http://bl.ocks.org/kerryrodden/7090426
@@ -76829,7 +76885,7 @@ var Path = React.createClass({displayName: "Path",
 
 module.exports = Path;
 
-},{"../../actions/circleChartActions":427,"../../stores/circleChartStore":451,"d3":220,"lodash":225,"node-uuid":226,"react":424}],443:[function(require,module,exports){
+},{"../../actions/circleChartActions":427,"../../stores/circleChartStore":452,"d3":220,"lodash":225,"node-uuid":226,"react":424}],444:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76907,7 +76963,7 @@ var Rect = React.createClass({displayName: "Rect",
 
 module.exports = Rect; 
 
-},{"d3":220,"react":424}],444:[function(require,module,exports){
+},{"d3":220,"react":424}],445:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76928,7 +76984,7 @@ var Home = React.createClass({displayName: "Home",
 
 module.exports = Home; 
 
-},{"react":424,"react-router":252}],445:[function(require,module,exports){
+},{"react":424,"react-router":252}],446:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76948,7 +77004,7 @@ var NotFoundPage = React.createClass({displayName: "NotFoundPage",
 
 module.exports = NotFoundPage; 
 
-},{"react":424,"react-router":252}],446:[function(require,module,exports){
+},{"react":424,"react-router":252}],447:[function(require,module,exports){
 "use strict"; 
 
 var keyMirror = require('react/lib/keyMirror'); 
@@ -76960,7 +77016,7 @@ module.exports = keyMirror({
 	UPDATE_NODES: null
 });
 
-},{"react/lib/keyMirror":409}],447:[function(require,module,exports){
+},{"react/lib/keyMirror":409}],448:[function(require,module,exports){
 /**
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -76978,7 +77034,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":221}],448:[function(require,module,exports){
+},{"flux":221}],449:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76992,7 +77048,7 @@ Router.run(routes, function(Handler) {
 	React.render(React.createElement(Handler, null), document.getElementById('app')); 
 });
 
-},{"./actions/initializeActions":428,"./routes":449,"react":424,"react-router":252}],449:[function(require,module,exports){
+},{"./actions/initializeActions":428,"./routes":450,"react":424,"react-router":252}],450:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -77020,7 +77076,7 @@ var routes = (
 
 module.exports = routes; 
 
-},{"./components/about/aboutPage":431,"./components/app":432,"./components/authors/authorPage":435,"./components/authors/manageAuthorsPage":436,"./components/dashboard/dashboardPage":441,"./components/homePage":444,"./components/notFoundPage":445,"react":424,"react-router":252}],450:[function(require,module,exports){
+},{"./components/about/aboutPage":431,"./components/app":432,"./components/authors/authorPage":435,"./components/authors/manageAuthorsPage":436,"./components/dashboard/dashboardPage":441,"./components/homePage":445,"./components/notFoundPage":446,"react":424,"react-router":252}],451:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -77078,7 +77134,7 @@ Dispatcher.register(function(action){
 
 module.exports = AuthorStore; 
 
-},{"../constants/actionTypes":446,"../dispatcher/appDispatcher":447,"events":198,"lodash":225,"object-assign":227}],451:[function(require,module,exports){
+},{"../constants/actionTypes":447,"../dispatcher/appDispatcher":448,"events":198,"lodash":225,"object-assign":227}],452:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -77122,4 +77178,4 @@ Dispatcher.register(function(action){
 
 module.exports = CircleChartStore; 
 
-},{"../constants/actionTypes":446,"../dispatcher/appDispatcher":447,"events":198,"lodash":225,"object-assign":227}]},{},[448]);
+},{"../constants/actionTypes":447,"../dispatcher/appDispatcher":448,"events":198,"lodash":225,"object-assign":227}]},{},[449]);
