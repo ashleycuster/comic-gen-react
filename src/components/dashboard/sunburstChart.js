@@ -3,11 +3,11 @@
 var React = require('react'); 
 // var d3Chart = require('./d3Chart');
 
-var Chart = React.createClass({
-  // propTypes: {
-  //   data: React.PropTypes.array,
-  //   domain: React.PropTypes.object
-  // },
+var SunburstChart = React.createClass({
+  propTypes: {
+    width: React.PropTypes.number.isRequired,
+    height: React.PropTypes.number.isRequired
+  },
 
   // componentDidMount: function() {
   //   var el = this.getDOMNode();
@@ -45,4 +45,4 @@ var Chart = React.createClass({
   }
 });
 
-module.exports = Chart; 
+module.exports = SunburstChart; 

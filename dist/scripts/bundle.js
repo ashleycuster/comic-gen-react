@@ -75925,7 +75925,7 @@ var AuthorActions = {
 
 module.exports = AuthorActions; 
 
-},{"../api/authorApi":429,"../constants/actionTypes":447,"../dispatcher/appDispatcher":448}],427:[function(require,module,exports){
+},{"../api/authorApi":429,"../constants/actionTypes":448,"../dispatcher/appDispatcher":449}],427:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -75945,7 +75945,7 @@ var CircleChartActions = {
 
 module.exports = CircleChartActions; 
 
-},{"../constants/actionTypes":447,"../dispatcher/appDispatcher":448}],428:[function(require,module,exports){
+},{"../constants/actionTypes":448,"../dispatcher/appDispatcher":449}],428:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher');
@@ -75965,7 +75965,7 @@ var InitializeActions = {
 
 module.exports = InitializeActions; 
 
-},{"../api/authorApi":429,"../constants/actionTypes":447,"../dispatcher/appDispatcher":448}],429:[function(require,module,exports){
+},{"../api/authorApi":429,"../constants/actionTypes":448,"../dispatcher/appDispatcher":449}],429:[function(require,module,exports){
 "use strict";
 
 //This file is mocking a web API by hitting hard coded data.
@@ -76040,6 +76040,167 @@ module.exports = {
 };
 
 },{}],431:[function(require,module,exports){
+/*
+ *
+ * This code was modified from the example found at http://bl.ocks.org/kerryrodden/7090426
+ * which is covered by the Apache v2.0 License. A copy of this license is as follows:
+ *    --- BEGIN ---
+ *    Copyright 2013 Google Inc. All Rights Reserved.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  --- END ---
+ * Developers: Do not remove this notification or license.
+ */
+"use strict";
+
+var d3 = require('d3');
+
+var DashboardApi = {
+
+	// Take a 2-column CSV and transform it into a hierarchical structure suitable
+	// for a partition layout. The first column is a sequence of step names, from
+	// root to leaf, separated by hyphens. The second column is a count of how 
+	// often that sequence occurred.
+	buildHierarchy: function (csv) {
+		var root = {"name": "root", "children": []};
+		for (var i = 0; i < csv.length; i++) {
+			var sequence = csv[i][0];
+			var size = +csv[i][1];
+		if (isNaN(size)) { // e.g. if this is a header row
+			continue;
+		}
+		var parts = sequence.split("-");
+		var currentNode = root;
+		for (var j = 0; j < parts.length; j++) {
+			var children = currentNode["children"];
+			var nodeName = parts[j];
+			var childNode;
+			if (j + 1 < parts.length) {
+				// Not yet at the end of the sequence; move down the tree.
+				var foundChild = false;
+				for (var k = 0; k < children.length; k++) {
+					if (children[k]["name"] === nodeName) {
+						childNode = children[k];
+						foundChild = true;
+						break;
+					}
+				}
+				// If we don't already have a child node for this branch, create it.
+				if (!foundChild) {
+					childNode = {"name": nodeName, "children": []};
+					children.push(childNode);
+				}
+				currentNode = childNode;
+			}
+			else {
+			// Reached the end of the sequence; create a leaf node.
+				childNode = {"name": nodeName, "size": size};
+				children.push(childNode);
+			}
+		}
+		}
+		return root;
+	},
+
+	getData: function (radius, successCallback) {
+		var vm = this;
+	// Use d3.text and d3.csv.parseRows so that we do not need to have a header
+	// row, and can receive the csv as an array of arrays.
+		d3.text("data/dhs_endpoints.csv", function(text) {
+			var newArcData = { json: {}, array: [] };
+			var csv = d3.csv.parseRows(text);
+			var json = vm.buildHierarchy(csv);
+
+			var partition = d3.layout.partition()
+				.size([2 * Math.PI, radius * radius])
+				.value(function(d) { return d.size; });
+
+			// For efficiency, filter nodes to keep only those large enough to see.
+			var nodes = partition.nodes(json)
+				.filter(function(d) {
+					return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
+			});
+
+			newArcData.json = json; 
+			newArcData.array = nodes; 
+
+			successCallback(newArcData);
+		});
+	},
+
+	// Calculate color based on number 0-100
+	// 100 = all red, 50 = half red half green (yellow), 0 = all green
+	calculateColor: function (name) {
+		var score = this.dhsAgencyRiskScores[name];
+		score = score % 100;
+		var max = 180;
+		var red = max; 
+		var green = max; 
+
+		var x = score - 50; 
+		if ( x > 0 ) {
+		green -= max * (x / 50);
+		}
+		else {
+		red += max * (x / 50); 
+		}
+
+		var redHex = Math.floor(red).toString(16);
+		var greenHex = Math.floor(green).toString(16);
+		redHex = redHex.length < 2 ? "0" + redHex : redHex;
+		greenHex = greenHex.length < 2 ? "0" + greenHex : greenHex;
+		var colorHex = "#" + redHex + greenHex + "00"; 
+		return colorHex; 
+	},
+
+	dhsAgencyRiskScores: {
+		"customs": 90,
+		"customscomponent1": 98,
+		"subcomponent1": 80,
+		"subcomponent2": 0,
+		"customscomponent2": 95,
+		"customscomponent3": 85,
+		"customscomponent4": 40,
+		"citizenship": 77,
+		"citizenshipcomponent1": 63,
+		"citizenshipcomponent2": 90,
+		"citizenshipcomponent3": 45,
+		"citizenshipcomponent4": 17,
+		"coastguard": 83,
+		"coastguardcomponent1": 70,
+		"coastguardcomponent2": 60,
+		"coastguardcomponent3": 81,
+		"coastguardcomponent4": 0,
+		"fema": 58,
+		"femacomponent1": 40,
+		"femacomponent2": 60,
+		"femacomponent3": 65,
+		"femacomponent4": 15,
+		"immigration": 25,
+		"immigrationcomponent1": 30,
+		"immigrationcomponent2": 60,
+		"immigrationcomponent3": 10,
+		"immigrationcomponent4": 22,
+		"secretservice": 35,
+		"secretservicecomponent1": 20,
+		"secretservicecomponent2": 50,
+		"secretservicecomponent3": 15,
+		"secretservicecomponent4": 30,
+		"tsa": 95,
+		"tsacomponent1": 99,
+		"tsacomponent2": 25,
+		"tsacomponent3": 83,
+		"tsacomponent4": 54
+		}
+};
+
+module.exports = DashboardApi;
+
+},{"d3":220}],432:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76078,7 +76239,7 @@ var About = React.createClass({displayName: "About",
 
 module.exports = About; 
 
-},{"react":424}],432:[function(require,module,exports){
+},{"react":424}],433:[function(require,module,exports){
 /*eslint-disable strict */
 
 var React = require('react'); 
@@ -76103,7 +76264,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App; 
 
-},{"./common/header":437,"jquery":224,"react":424,"react-router":252}],433:[function(require,module,exports){
+},{"./common/header":438,"jquery":224,"react":424,"react-router":252}],434:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76146,7 +76307,7 @@ var AuthorForm = React.createClass({displayName: "AuthorForm",
 
 module.exports = AuthorForm; 
 
-},{"../common/textInput":438,"react":424}],434:[function(require,module,exports){
+},{"../common/textInput":439,"react":424}],435:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76186,7 +76347,7 @@ var AuthorList = React.createClass({displayName: "AuthorList",
 
 module.exports = AuthorList; 
 
-},{"react":424,"react-router":252}],435:[function(require,module,exports){
+},{"react":424,"react-router":252}],436:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76230,7 +76391,7 @@ var AuthorPage = React.createClass({displayName: "AuthorPage",
 
 module.exports = AuthorPage; 
 
-},{"../../actions/authorActions":426,"../../stores/authorStore":451,"./authorList":434,"react":424,"react-router":252}],436:[function(require,module,exports){
+},{"../../actions/authorActions":426,"../../stores/authorStore":452,"./authorList":435,"react":424,"react-router":252}],437:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76327,7 +76488,7 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
 
 module.exports = ManageAuthorPage; 
 
-},{"../../actions/authorActions":426,"../../stores/authorStore":451,"./authorForm":433,"react":424,"react-router":252,"toastr":425}],437:[function(require,module,exports){
+},{"../../actions/authorActions":426,"../../stores/authorStore":452,"./authorForm":434,"react":424,"react-router":252,"toastr":425}],438:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76353,7 +76514,7 @@ var Header = React.createClass({displayName: "Header",
 
 module.exports = Header; 
 
-},{"react":424,"react-router":252}],438:[function(require,module,exports){
+},{"react":424,"react-router":252}],439:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76394,7 +76555,7 @@ var TextInput = React.createClass({displayName: "TextInput",
 
 module.exports = TextInput; 
 
-},{"react":424}],439:[function(require,module,exports){
+},{"react":424}],440:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76449,115 +76610,22 @@ var Bar = React.createClass({displayName: "Bar",
 
 module.exports = Bar; 
 
-},{"./rect":444,"d3":220,"react":424}],440:[function(require,module,exports){
-"use strict"; 
-
-var React = require('react'); 
-// var d3Chart = require('./d3Chart');
-
-var Chart = React.createClass({displayName: "Chart",
-  // propTypes: {
-  //   data: React.PropTypes.array,
-  //   domain: React.PropTypes.object
-  // },
-
-  // componentDidMount: function() {
-  //   var el = this.getDOMNode();
-  //   d3Chart.create(el, {
-  //     width: '100%',
-  //     height: '300px'
-  //   }, this.getChartState());
-  // },
-
-  // componentDidUpdate: function() {
-  //   var el = this.getDOMNode();
-  //   d3Chart.update(el, this.getChartState());
-  // },
-
-  // getChartState: function() {
-  //   return {
-  //     data: this.props.data,
-  //     domain: this.props.domain
-  //   };
-  // },
-
-  // componentWillUnmount: function() {
-  //   var el = this.getDOMNode();
-  //   d3Chart.destroy(el);
-  // },
-
-  render: function() {
-    return (
-         React.createElement("svg", {width: this.props.width, 
-                 height: this.props.height, 
-                 style: {float: "left"}}, 
-              this.props.children
-          ) 
-    );
-  }
-});
-
-module.exports = Chart; 
-
-},{"react":424}],441:[function(require,module,exports){
+},{"./rect":444,"d3":220,"react":424}],441:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
 var Router = require('react-router'); 
-var Chart = require('./chart'); 
+var SunburstChart = require('./sunburstChart'); 
 var Bar = require('./bar'); 
 var Path = require('./path');
 var Info = require('./info');
 var d3 = require('d3');
+var DashboardApi = require('../../api/dashboardApi');
 
 var width = 550; 
 var height = 400; 
 var radius = Math.min(width, height) / 2;
 
-// Take a 2-column CSV and transform it into a hierarchical structure suitable
-// for a partition layout. The first column is a sequence of step names, from
-// root to leaf, separated by hyphens. The second column is a count of how 
-// often that sequence occurred.
-var _buildHierarchy = function (csv) {
-  var root = {"name": "root", "children": []};
-  for (var i = 0; i < csv.length; i++) {
-    var sequence = csv[i][0];
-    var size = +csv[i][1];
-    if (isNaN(size)) { // e.g. if this is a header row
-      continue;
-    }
-    var parts = sequence.split("-");
-    var currentNode = root;
-    for (var j = 0; j < parts.length; j++) {
-      var children = currentNode["children"];
-      var nodeName = parts[j];
-      var childNode;
-      if (j + 1 < parts.length) {
-      // Not yet at the end of the sequence; move down the tree.
-      var foundChild = false;
-      for (var k = 0; k < children.length; k++) {
-        if (children[k]["name"] === nodeName) {
-          childNode = children[k];
-          foundChild = true;
-          break;
-        }
-      }
-      // If we don't already have a child node for this branch, create it.
-      if (!foundChild) {
-        childNode = {"name": nodeName, "children": []};
-        children.push(childNode);
-      }
-      currentNode = childNode;
-    }
-    else {
-    // Reached the end of the sequence; create a leaf node.
-    childNode = {"name": nodeName, "size": size};
-    children.push(childNode);
-    }
-    }
-  }
-  return root;
-};
 
 var Dashboard = React.createClass({displayName: "Dashboard",
 	mixins: [
@@ -76571,7 +76639,6 @@ var Dashboard = React.createClass({displayName: "Dashboard",
           width: width,
           height: height,
           radius: radius
-          // arcData: {json: {}, array: {}}
         };
     },
 
@@ -76583,32 +76650,8 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 
     componentWillMount: function () {
 		var vm = this;
-		var getData = function (successCallback) {
-		// Use d3.text and d3.csv.parseRows so that we do not need to have a header
-		// row, and can receive the csv as an array of arrays.
-			d3.text("data/dhs_endpoints.csv", function(text) {
-				var newArcData = { json: {}, array: [] };
-				var csv = d3.csv.parseRows(text);
-				var json = _buildHierarchy(csv);
 
-				var partition = d3.layout.partition()
-					.size([2 * Math.PI, radius * radius])
-					.value(function(d) { return d.size; });
-
-				// For efficiency, filter nodes to keep only those large enough to see.
-				var nodes = partition.nodes(json)
-					.filter(function(d) {
-						return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
-				});
-
-				newArcData.json = json; 
-				newArcData.array = nodes; 
-
-				successCallback(newArcData);
-			});
-		};
-
-		getData(function (newArcData) {
+		DashboardApi.getData(radius, function (newArcData) {
 			var setArcData = {json: {}, array: []};
 			setArcData.json = newArcData.json; 
 			setArcData.array = newArcData.array;
@@ -76624,7 +76667,7 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 		return (
 			React.createElement("div", null, 
 				React.createElement("hr", null), 
-					React.createElement(Chart, {width: this.props.width, 
+					React.createElement(SunburstChart, {width: this.props.width, 
 						height: this.props.height}, 
 						React.createElement(Path, {width: this.props.width, 
 							height: this.props.height, 
@@ -76639,7 +76682,7 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 
 module.exports = Dashboard;         
 
-},{"./bar":439,"./chart":440,"./info":442,"./path":443,"d3":220,"react":424,"react-router":252}],442:[function(require,module,exports){
+},{"../../api/dashboardApi":431,"./bar":440,"./info":442,"./path":443,"./sunburstChart":445,"d3":220,"react":424,"react-router":252}],442:[function(require,module,exports){
 "use strict";
 
 var React = require('react'); 
@@ -76715,74 +76758,10 @@ var React = require('react');
 var d3 = require('d3'); 
 var _ = require('lodash');
 var uuid = require('node-uuid');
+var DashboardApi = require('../../api/dashboardApi');
 var CircleChartActions = require('../../actions/circleChartActions');
 var CircleChartStore = require('../../stores/circleChartStore');
 
-
-
-// Calculate color based on number 0-100
-// 100 = all red, 50 = half red half green (yellow), 0 = all green
-var calculateColor = function (score) {
-  score = score % 100;
-  var max = 180;
-  var red = max; 
-  var green = max; 
-
-  var x = score - 50; 
-  if ( x > 0 ) {
-    green -= max * (x / 50);
-  }
-  else {
-    red += max * (x / 50); 
-  }
-
-  var redHex = Math.floor(red).toString(16);
-  var greenHex = Math.floor(green).toString(16);
-  redHex = redHex.length < 2 ? "0" + redHex : redHex;
-  greenHex = greenHex.length < 2 ? "0" + greenHex : greenHex;
-  var colorHex = "#" + redHex + greenHex + "00"; 
-  return colorHex; 
-};
-
-var dhsAgencyRiskScores = {
-  "customs": 90,
-  "customscomponent1": 98,
-  "subcomponent1": 80,
-  "subcomponent2": 0,
-  "customscomponent2": 95,
-  "customscomponent3": 85,
-  "customscomponent4": 40,
-  "citizenship": 77,
-  "citizenshipcomponent1": 63,
-  "citizenshipcomponent2": 90,
-  "citizenshipcomponent3": 45,
-  "citizenshipcomponent4": 17,
-  "coastguard": 83,
-  "coastguardcomponent1": 70,
-  "coastguardcomponent2": 60,
-  "coastguardcomponent3": 81,
-  "coastguardcomponent4": 0,
-  "fema": 58,
-  "femacomponent1": 40,
-  "femacomponent2": 60,
-  "femacomponent3": 65,
-  "femacomponent4": 15,
-  "immigration": 25,
-  "immigrationcomponent1": 30,
-  "immigrationcomponent2": 60,
-  "immigrationcomponent3": 10,
-  "immigrationcomponent4": 22,
-  "secretservice": 35,
-  "secretservicecomponent1": 20,
-  "secretservicecomponent2": 50,
-  "secretservicecomponent3": 15,
-  "secretservicecomponent4": 30,
-  "tsa": 95,
-  "tsacomponent1": 99,
-  "tsacomponent2": 25,
-  "tsacomponent3": 83,
-  "tsacomponent4": 54
-};
 
 var arc = d3.svg.arc()
             .startAngle(function(d) { return d.x; })
@@ -76871,7 +76850,7 @@ var Path = React.createClass({displayName: "Path",
         "fill-rule": "evenodd",
         stroke: "#fff",
         fillOpacity: vm.state.highlightedNodes.indexOf(node.name) >= 0 ? 1 : vm.state.fillOpacity,
-        fill: node.name !== "root" ? calculateColor(dhsAgencyRiskScores[node.name]) : "#ffffff",
+        fill: node.name !== "root" ? DashboardApi.calculateColor(node.name) : "#ffffff",
         key: uuid.v4(),
         onMouseOver: (function (selectedNode) {return function () { vm.onPathMouseOver(selectedNode); }; })(node)
       };
@@ -76883,7 +76862,7 @@ var Path = React.createClass({displayName: "Path",
 
 module.exports = Path;
 
-},{"../../actions/circleChartActions":427,"../../stores/circleChartStore":452,"d3":220,"lodash":225,"node-uuid":226,"react":424}],444:[function(require,module,exports){
+},{"../../actions/circleChartActions":427,"../../api/dashboardApi":431,"../../stores/circleChartStore":453,"d3":220,"lodash":225,"node-uuid":226,"react":424}],444:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76965,6 +76944,56 @@ module.exports = Rect;
 "use strict"; 
 
 var React = require('react'); 
+// var d3Chart = require('./d3Chart');
+
+var SunburstChart = React.createClass({displayName: "SunburstChart",
+  propTypes: {
+    width: React.PropTypes.number.isRequired,
+    height: React.PropTypes.number.isRequired
+  },
+
+  // componentDidMount: function() {
+  //   var el = this.getDOMNode();
+  //   d3Chart.create(el, {
+  //     width: '100%',
+  //     height: '300px'
+  //   }, this.getChartState());
+  // },
+
+  // componentDidUpdate: function() {
+  //   var el = this.getDOMNode();
+  //   d3Chart.update(el, this.getChartState());
+  // },
+
+  // getChartState: function() {
+  //   return {
+  //     data: this.props.data,
+  //     domain: this.props.domain
+  //   };
+  // },
+
+  // componentWillUnmount: function() {
+  //   var el = this.getDOMNode();
+  //   d3Chart.destroy(el);
+  // },
+
+  render: function() {
+    return (
+         React.createElement("svg", {width: this.props.width, 
+                 height: this.props.height, 
+                 style: {float: "left"}}, 
+              this.props.children
+          ) 
+    );
+  }
+});
+
+module.exports = SunburstChart; 
+
+},{"react":424}],446:[function(require,module,exports){
+"use strict"; 
+
+var React = require('react'); 
 var Router = require('react-router'); 
 var Link = Router.Link; 
 
@@ -76982,7 +77011,7 @@ var Home = React.createClass({displayName: "Home",
 
 module.exports = Home; 
 
-},{"react":424,"react-router":252}],446:[function(require,module,exports){
+},{"react":424,"react-router":252}],447:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -77002,7 +77031,7 @@ var NotFoundPage = React.createClass({displayName: "NotFoundPage",
 
 module.exports = NotFoundPage; 
 
-},{"react":424,"react-router":252}],447:[function(require,module,exports){
+},{"react":424,"react-router":252}],448:[function(require,module,exports){
 "use strict"; 
 
 var keyMirror = require('react/lib/keyMirror'); 
@@ -77014,7 +77043,7 @@ module.exports = keyMirror({
 	UPDATE_NODES: null
 });
 
-},{"react/lib/keyMirror":409}],448:[function(require,module,exports){
+},{"react/lib/keyMirror":409}],449:[function(require,module,exports){
 /**
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -77032,7 +77061,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":221}],449:[function(require,module,exports){
+},{"flux":221}],450:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -77046,7 +77075,7 @@ Router.run(routes, function(Handler) {
 	React.render(React.createElement(Handler, null), document.getElementById('app')); 
 });
 
-},{"./actions/initializeActions":428,"./routes":450,"react":424,"react-router":252}],450:[function(require,module,exports){
+},{"./actions/initializeActions":428,"./routes":451,"react":424,"react-router":252}],451:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -77074,7 +77103,7 @@ var routes = (
 
 module.exports = routes; 
 
-},{"./components/about/aboutPage":431,"./components/app":432,"./components/authors/authorPage":435,"./components/authors/manageAuthorsPage":436,"./components/dashboard/dashboardPage":441,"./components/homePage":445,"./components/notFoundPage":446,"react":424,"react-router":252}],451:[function(require,module,exports){
+},{"./components/about/aboutPage":432,"./components/app":433,"./components/authors/authorPage":436,"./components/authors/manageAuthorsPage":437,"./components/dashboard/dashboardPage":441,"./components/homePage":446,"./components/notFoundPage":447,"react":424,"react-router":252}],452:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -77132,7 +77161,7 @@ Dispatcher.register(function(action){
 
 module.exports = AuthorStore; 
 
-},{"../constants/actionTypes":447,"../dispatcher/appDispatcher":448,"events":198,"lodash":225,"object-assign":227}],452:[function(require,module,exports){
+},{"../constants/actionTypes":448,"../dispatcher/appDispatcher":449,"events":198,"lodash":225,"object-assign":227}],453:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -77176,4 +77205,4 @@ Dispatcher.register(function(action){
 
 module.exports = CircleChartStore; 
 
-},{"../constants/actionTypes":447,"../dispatcher/appDispatcher":448,"events":198,"lodash":225,"object-assign":227}]},{},[449]);
+},{"../constants/actionTypes":448,"../dispatcher/appDispatcher":449,"events":198,"lodash":225,"object-assign":227}]},{},[450]);
