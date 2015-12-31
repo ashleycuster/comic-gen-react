@@ -75928,26 +75928,6 @@ module.exports = AuthorActions;
 },{"../api/authorApi":429,"../constants/actionTypes":448,"../dispatcher/appDispatcher":449}],427:[function(require,module,exports){
 "use strict"; 
 
-var Dispatcher = require('../dispatcher/appDispatcher'); 
-var ActionTypes = require('../constants/actionTypes'); 
-
-var CircleChartActions = {
-
-	updateAuthor: function (nodes) {
-		var updatedNodes = nodes; 
-
-		Dispatcher.dispatch({
-			actionType: ActionTypes.UPDATE_NODES,
-			nodes: updatedNodes
-		});
-	}
-}; 
-
-module.exports = CircleChartActions; 
-
-},{"../constants/actionTypes":448,"../dispatcher/appDispatcher":449}],428:[function(require,module,exports){
-"use strict"; 
-
 var Dispatcher = require('../dispatcher/appDispatcher');
 var ActionTypes = require('../constants/actionTypes'); 
 var AuthorApi = require('../api/authorApi'); 
@@ -75965,7 +75945,27 @@ var InitializeActions = {
 
 module.exports = InitializeActions; 
 
-},{"../api/authorApi":429,"../constants/actionTypes":448,"../dispatcher/appDispatcher":449}],429:[function(require,module,exports){
+},{"../api/authorApi":429,"../constants/actionTypes":448,"../dispatcher/appDispatcher":449}],428:[function(require,module,exports){
+"use strict"; 
+
+var Dispatcher = require('../dispatcher/appDispatcher'); 
+var ActionTypes = require('../constants/actionTypes'); 
+
+var SunburstActions = {
+
+	updateAuthor: function (nodes) {
+		var updatedNodes = nodes; 
+
+		Dispatcher.dispatch({
+			actionType: ActionTypes.UPDATE_NODES,
+			nodes: updatedNodes
+		});
+	}
+}; 
+
+module.exports = SunburstActions; 
+
+},{"../constants/actionTypes":448,"../dispatcher/appDispatcher":449}],429:[function(require,module,exports){
 "use strict";
 
 //This file is mocking a web API by hitting hard coded data.
@@ -76132,6 +76132,7 @@ var DashboardApi = {
 		});
 	},
 
+	// calculateColor function written by Ashley Custer
 	// Calculate color based on number 0-100
 	// 100 = all red, 50 = half red half green (yellow), 0 = all green
 	calculateColor: function (name) {
@@ -76143,10 +76144,10 @@ var DashboardApi = {
 
 		var x = score - 50; 
 		if ( x > 0 ) {
-		green -= max * (x / 50);
+			green -= max * (x / 50);
 		}
 		else {
-		red += max * (x / 50); 
+			red += max * (x / 50); 
 		}
 
 		var redHex = Math.floor(red).toString(16);
@@ -76759,8 +76760,8 @@ var d3 = require('d3');
 var _ = require('lodash');
 var uuid = require('node-uuid');
 var DashboardApi = require('../../api/dashboardApi');
-var CircleChartActions = require('../../actions/circleChartActions');
-var CircleChartStore = require('../../stores/circleChartStore');
+var SunburstActions = require('../../actions/sunburstActions');
+var SunburstStore = require('../../stores/sunburstStore');
 
 
 var arc = d3.svg.arc()
@@ -76862,7 +76863,7 @@ var Path = React.createClass({displayName: "Path",
 
 module.exports = Path;
 
-},{"../../actions/circleChartActions":427,"../../api/dashboardApi":431,"../../stores/circleChartStore":453,"d3":220,"lodash":225,"node-uuid":226,"react":424}],444:[function(require,module,exports){
+},{"../../actions/sunburstActions":428,"../../api/dashboardApi":431,"../../stores/sunburstStore":453,"d3":220,"lodash":225,"node-uuid":226,"react":424}],444:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -77075,7 +77076,7 @@ Router.run(routes, function(Handler) {
 	React.render(React.createElement(Handler, null), document.getElementById('app')); 
 });
 
-},{"./actions/initializeActions":428,"./routes":451,"react":424,"react-router":252}],451:[function(require,module,exports){
+},{"./actions/initializeActions":427,"./routes":451,"react":424,"react-router":252}],451:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -77174,7 +77175,7 @@ var CHANGE_EVENT = 'change';
 // private authors variable
 var _highlightedNodes = [];
 
-var CircleChartStore = assign({}, EventEmitter.prototype, {
+var SunburstStore = assign({}, EventEmitter.prototype, {
 	addChangeListener: function (callback) {
 		this.on(CHANGE_EVENT, callback); 
 	},
@@ -77203,6 +77204,6 @@ Dispatcher.register(function(action){
 	}
 });
 
-module.exports = CircleChartStore; 
+module.exports = SunburstStore; 
 
 },{"../constants/actionTypes":448,"../dispatcher/appDispatcher":449,"events":198,"lodash":225,"object-assign":227}]},{},[450]);

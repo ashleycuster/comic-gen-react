@@ -3,7 +3,7 @@
 var Dispatcher = require('../dispatcher/appDispatcher'); 
 var ActionTypes = require('../constants/actionTypes'); 
 
-var CircleChartActions = {
+var SunburstActions = {
 
 	updateAuthor: function (nodes) {
 		var updatedNodes = nodes; 
@@ -15,4 +15,4 @@ var CircleChartActions = {
 	}
 }; 
 
-module.exports = CircleChartActions; 
+module.exports = SunburstActions; 

@@ -21,8 +21,8 @@ var d3 = require('d3');
 var _ = require('lodash');
 var uuid = require('node-uuid');
 var DashboardApi = require('../../api/dashboardApi');
-var CircleChartActions = require('../../actions/circleChartActions');
-var CircleChartStore = require('../../stores/circleChartStore');
+var SunburstActions = require('../../actions/sunburstActions');
+var SunburstStore = require('../../stores/sunburstStore');
 
 
 var arc = d3.svg.arc()

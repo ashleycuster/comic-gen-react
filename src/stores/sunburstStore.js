@@ -10,7 +10,7 @@ var CHANGE_EVENT = 'change';
 // private authors variable
 var _highlightedNodes = [];
 
-var CircleChartStore = assign({}, EventEmitter.prototype, {
+var SunburstStore = assign({}, EventEmitter.prototype, {
 	addChangeListener: function (callback) {
 		this.on(CHANGE_EVENT, callback); 
 	},
@@ -39,4 +39,4 @@ Dispatcher.register(function(action){
 	}
 });
 
-module.exports = CircleChartStore; 
+module.exports = SunburstStore; 
