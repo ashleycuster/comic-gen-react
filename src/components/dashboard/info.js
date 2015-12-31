@@ -26,7 +26,6 @@ var InfoPanel = React.createClass({
 
 	_onChange: function () {
 		var highlightedNodes = SunburstStore.getHighlightedNodes();
-		console.log(highlightedNodes);
 		var agencyName = highlightedNodes[0].name;
 		var riskScore = DashboardApi.dhsAgencyRiskScores[agencyName];
 		this.setState({agencyName: agencyName.toUpperCase(), riskScore: riskScore});

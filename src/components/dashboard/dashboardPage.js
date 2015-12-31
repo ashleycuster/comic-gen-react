@@ -29,39 +29,13 @@ var Dashboard = React.createClass({
         };
     },
 
-    getInitialState: function() {
-		return {
-			arcData: {json: {}, array: []}
-		};
-	},
-
-    componentWillMount: function () {
-		var vm = this;
-
-		DashboardApi.getData(radius, function (newArcData) {
-			var setArcData = {json: {}, array: []};
-			setArcData.json = newArcData.json; 
-			setArcData.array = newArcData.array;
-			vm.setState({arcData: setArcData});
-		});
-    },
-
-    componentDidMount: function () {
-
-    },
-
     render: function () {
 		return (
 			<div>
 				<hr/>
 					<SunburstChart width={this.props.width}
-						height={this.props.height}>
-						<Path width={this.props.width}
-							height={this.props.height}
-							radius={this.props.radius}
-							arcData={this.state.arcData} />
-					</SunburstChart>
-					<Info marginLeft={this.props.width} />
+						height={this.props.height}
+						radius={this.props.radius} />
 			</div>
 			);
 	}

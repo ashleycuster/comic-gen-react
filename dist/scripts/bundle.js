@@ -76643,39 +76643,13 @@ var Dashboard = React.createClass({displayName: "Dashboard",
         };
     },
 
-    getInitialState: function() {
-		return {
-			arcData: {json: {}, array: []}
-		};
-	},
-
-    componentWillMount: function () {
-		var vm = this;
-
-		DashboardApi.getData(radius, function (newArcData) {
-			var setArcData = {json: {}, array: []};
-			setArcData.json = newArcData.json; 
-			setArcData.array = newArcData.array;
-			vm.setState({arcData: setArcData});
-		});
-    },
-
-    componentDidMount: function () {
-
-    },
-
     render: function () {
 		return (
 			React.createElement("div", null, 
 				React.createElement("hr", null), 
 					React.createElement(SunburstChart, {width: this.props.width, 
-						height: this.props.height}, 
-						React.createElement(Path, {width: this.props.width, 
-							height: this.props.height, 
-							radius: this.props.radius, 
-							arcData: this.state.arcData})
-					), 
-					React.createElement(Info, {marginLeft: this.props.width})
+						height: this.props.height, 
+						radius: this.props.radius})
 			)
 			);
 	}
@@ -76712,7 +76686,6 @@ var InfoPanel = React.createClass({displayName: "InfoPanel",
 
 	_onChange: function () {
 		var highlightedNodes = SunburstStore.getHighlightedNodes();
-		console.log(highlightedNodes);
 		var agencyName = highlightedNodes[0].name;
 		var riskScore = DashboardApi.dhsAgencyRiskScores[agencyName];
 		this.setState({agencyName: agencyName.toUpperCase(), riskScore: riskScore});
@@ -76850,10 +76823,6 @@ var Path = React.createClass({displayName: "Path",
     },
 
     render: function() {
-      if (this.props.arcData.array.length < 1) {
-        return (React.createElement("g", null));
-      }
-      else {
         return (
           React.createElement("g", {className: "chart", 
               width: this.props.width, 
@@ -76862,7 +76831,6 @@ var Path = React.createClass({displayName: "Path",
                this.props.arcData.array.map(this.renderPaths) 
           )
         );
-      }
     },
 
     setHighlightedNodes: function (node) {
@@ -76978,53 +76946,77 @@ module.exports = Rect;
 "use strict"; 
 
 var React = require('react'); 
-// var d3Chart = require('./d3Chart');
+var SunburstStore = require('../../stores/sunburstStore');
+var Path = require('./path');
+var Info = require('./info');
+var d3 = require('d3');
+var DashboardApi = require('../../api/dashboardApi');
+
 
 var SunburstChart = React.createClass({displayName: "SunburstChart",
   propTypes: {
     width: React.PropTypes.number.isRequired,
-    height: React.PropTypes.number.isRequired
+    height: React.PropTypes.number.isRequired,
+    radius: React.PropTypes.number.isRequired
   },
 
-  // componentDidMount: function() {
-  //   var el = this.getDOMNode();
-  //   d3Chart.create(el, {
-  //     width: '100%',
-  //     height: '300px'
-  //   }, this.getChartState());
-  // },
+  getInitialState: function () {
+    return {
+      agencyName: "Agency Name",
+      riskScore: "",
+      highlightedNodes: [],
+      arcData: {}
+    };
+  },
 
-  // componentDidUpdate: function() {
-  //   var el = this.getDOMNode();
-  //   d3Chart.update(el, this.getChartState());
-  // },
+  componentWillMount: function () {
+    SunburstStore.addChangeListener(this._onChange);
 
-  // getChartState: function() {
-  //   return {
-  //     data: this.props.data,
-  //     domain: this.props.domain
-  //   };
-  // },
+    var vm = this;
 
-  // componentWillUnmount: function() {
-  //   var el = this.getDOMNode();
-  //   d3Chart.destroy(el);
-  // },
+    DashboardApi.getData(vm.props.radius, function (newArcData) {
+      var setArcData = {json: {}, array: []};
+      setArcData.json = newArcData.json; 
+      setArcData.array = newArcData.array;
+      vm.setState({arcData: setArcData});
+    });
+  },
+
+  componentWillUnmount: function () {
+    SunburstStore.removeChangeListener(this._onChange); 
+  },
+
+  _onChange: function () {
+    var highlightedNodes = SunburstStore.getHighlightedNodes();
+    var agencyName = highlightedNodes[0].name;
+    var riskScore = DashboardApi.dhsAgencyRiskScores[agencyName];
+    this.setState({agencyName: agencyName.toUpperCase(), riskScore: riskScore, highlightedNodes: highlightedNodes});
+  },
 
   render: function() {
+    if (this.state.arcData.array === undefined) {
+      return (React.createElement("div", null));
+    }
     return (
-         React.createElement("svg", {width: this.props.width, 
-                 height: this.props.height, 
-                 style: {float: "left"}}, 
-              this.props.children
-          ) 
+        React.createElement("div", null, 
+         React.createElement("svg", {width: this.props.width, height: this.props.height, style: {float: "left"}}, 
+              React.createElement(Path, {height: this.props.height, 
+                    width: this.props.width, 
+                    radius: this.props.radius, 
+                    arcData: this.state.arcData, 
+                    highlightedNodes: this.state.highlightedNodes})
+          ), 
+          React.createElement(Info, {marginLeft: this.props.width, 
+                agencyName: this.state.agencyName, 
+                highlightedNodes: this.state.highlightedNodes})
+        )
     );
   }
 });
 
 module.exports = SunburstChart; 
 
-},{"react":424}],446:[function(require,module,exports){
+},{"../../api/dashboardApi":431,"../../stores/sunburstStore":453,"./info":442,"./path":443,"d3":220,"react":424}],446:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 

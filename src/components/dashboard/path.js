@@ -86,10 +86,6 @@ var Path = React.createClass({
     },
 
     render: function() {
-      if (this.props.arcData.array.length < 1) {
-        return (<g></g>);
-      }
-      else {
         return (
           <g className="chart" 
               width={this.props.width} 
@@ -98,7 +94,6 @@ var Path = React.createClass({
               { this.props.arcData.array.map(this.renderPaths) }
           </g>
         );
-      }
     },
 
     setHighlightedNodes: function (node) {
