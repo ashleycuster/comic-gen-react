@@ -20,7 +20,8 @@ var SunburstChart = React.createClass({
       agencyName: "Agency Name",
       riskScore: "",
       highlightedNodes: [],
-      arcData: {}
+      arcData: {},
+      fillOpacity: 1
     };
   },
 
@@ -43,9 +44,15 @@ var SunburstChart = React.createClass({
 
   _onChange: function () {
     var highlightedNodes = SunburstStore.getHighlightedNodes();
-    var agencyName = highlightedNodes[0].name;
-    var riskScore = DashboardApi.dhsAgencyRiskScores[agencyName];
-    this.setState({agencyName: agencyName.toUpperCase(), riskScore: riskScore, highlightedNodes: highlightedNodes});
+    var fillOpacity = SunburstStore.getFillOpacity();
+    var agencyName = SunburstStore.getIsHighlighted() ? highlightedNodes[0].name : "";
+    var riskScore = SunburstStore.getIsHighlighted() ? DashboardApi.dhsAgencyRiskScores[agencyName] : "";
+    this.setState({
+                    agencyName: agencyName.toUpperCase(), 
+                    riskScore: riskScore, 
+                    highlightedNodes: highlightedNodes,
+                    fillOpacity: fillOpacity
+                  });
   },
 
   render: function() {
@@ -59,10 +66,12 @@ var SunburstChart = React.createClass({
                     width={this.props.width}
                     radius={this.props.radius}
                     arcData={this.state.arcData}
-                    highlightedNodes={this.state.highlightedNodes} />
+                    highlightedNodes={this.state.highlightedNodes}
+                    fillOpacity={this.state.fillOpacity} />
           </svg>
           <Info marginLeft={this.props.width}
                 agencyName={this.state.agencyName}
+                riskScore={this.state.riskScore}
                 highlightedNodes={this.state.highlightedNodes} />
         </div>
     );

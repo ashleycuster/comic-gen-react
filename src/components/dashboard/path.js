@@ -49,12 +49,12 @@ var Path = React.createClass({
       };
     },
 
-    getInitialState: function () {
-      return {
-        fillOpacity: 1,
-        highlightedNodes: []
-      };
-    },
+    // getInitialState: function () {
+    //   return {
+    //     fillOpacity: 1,
+    //     highlightedNodes: []
+    //   };
+    // },
 
     // componentWillMount: function () {
     //   CircleChartStore.addChangeListener(this._onChange);
@@ -80,12 +80,12 @@ var Path = React.createClass({
       return path;
     },
 
-    handleMouseLeave: function (event) {
-      console.log('mouseleave g element');
-      console.log(event.type);
+    resetChart: function () {
+      SunburstActions.resetChart();
     },
 
     render: function() {
+      var vm = this;
         return (
           <g className="chart" 
               width={this.props.width} 
@@ -99,7 +99,7 @@ var Path = React.createClass({
     setHighlightedNodes: function (node) {
       if (node.name !== "root") {
         var nodes = this.getAncestors(node);
-        this.setState({fillOpacity: 0.3, highlightedNodes: nodes});
+        // this.setState({fillOpacity: 0.3, highlightedNodes: nodes});
         SunburstActions.highlightNodes(nodes);
       }
     },
@@ -114,7 +114,7 @@ var Path = React.createClass({
         children: ['a', 'b', 'c'],
         size: 101,
         stroke: "#fff",
-        fillOpacity: vm.state.highlightedNodes.indexOf(node) >= 0 ? 1 : vm.state.fillOpacity,
+        fillOpacity: vm.props.highlightedNodes.indexOf(node) >= 0 ? 1 : vm.props.fillOpacity,
         fill: node.name !== "root" ? DashboardApi.calculateColor(node.name) : "#ffffff",
         key: uuid.v4(),
         onMouseOver: (function (selectedNode) {return function () { vm.setHighlightedNodes(selectedNode); }; })(node)

@@ -75169,6 +75169,13 @@ var SunburstActions = {
 			actionType: ActionTypes.UPDATE_NODES,
 			nodes: updatedNodes
 		});
+	},
+
+	resetChart: function () {
+		Dispatcher.dispatch({
+			actionType: ActionTypes.RESET_CHART,
+			opacity: 1
+		});
 	}
 }; 
 
@@ -75811,39 +75818,17 @@ module.exports = Dashboard;
 
 var React = require('react'); 
 var SunburstStore = require('../../stores/sunburstStore');
-var DashboardApi = require('../../api/dashboardApi');
 
-var InfoPanel = React.createClass({displayName: "InfoPanel",
+var Info = React.createClass({displayName: "Info",
 	propTypes: {
-		marginLeft: React.PropTypes.number.isRequired
-	},
-
-	getInitialState: function () {
-		return {
-			agencyName: "Agency Name",
-			riskScore: ""
-		};
-	},
-
-	componentWillMount: function () {
-		SunburstStore.addChangeListener(this._onChange);
-	},
-
-	componentWillUnmount: function () {
-		SunburstStore.removeChangeListener(this._onChange); 
-	},
-
-	_onChange: function () {
-		var highlightedNodes = SunburstStore.getHighlightedNodes();
-		var agencyName = highlightedNodes[0].name;
-		var riskScore = DashboardApi.dhsAgencyRiskScores[agencyName];
-		this.setState({agencyName: agencyName.toUpperCase(), riskScore: riskScore});
+		marginLeft: React.PropTypes.number.isRequired,
+		highlightedNodes: React.PropTypes.array.isRequired
 	},
 
 	render: function () {
 		return (
 				React.createElement("div", {width: "1000px", style: { marginLeft: this.props.marginLeft}}, 
-					React.createElement("h1", null, this.state.agencyName, ", Risk Score: ", this.state.riskScore), 
+					React.createElement("h1", null, this.props.agencyName, ", Risk Score: ", this.props.riskScore), 
 					React.createElement("table", {style: { marginTop: "20px", marginLeft: "20px"}}, 
 						React.createElement("tbody", null, 
 							React.createElement("tr", null, 
@@ -75883,9 +75868,9 @@ var InfoPanel = React.createClass({displayName: "InfoPanel",
 	}
 });
 
-module.exports = InfoPanel; 
+module.exports = Info; 
 
-},{"../../api/dashboardApi":433,"../../stores/sunburstStore":453,"react":426}],444:[function(require,module,exports){
+},{"../../stores/sunburstStore":453,"react":426}],444:[function(require,module,exports){
 /*
  *
  * This code was modified from the example found at http://bl.ocks.org/kerryrodden/7090426
@@ -75937,12 +75922,12 @@ var Path = React.createClass({displayName: "Path",
       };
     },
 
-    getInitialState: function () {
-      return {
-        fillOpacity: 1,
-        highlightedNodes: []
-      };
-    },
+    // getInitialState: function () {
+    //   return {
+    //     fillOpacity: 1,
+    //     highlightedNodes: []
+    //   };
+    // },
 
     // componentWillMount: function () {
     //   CircleChartStore.addChangeListener(this._onChange);
@@ -75968,12 +75953,12 @@ var Path = React.createClass({displayName: "Path",
       return path;
     },
 
-    handleMouseLeave: function (event) {
-      console.log('mouseleave g element');
-      console.log(event.type);
+    resetChart: function () {
+      SunburstActions.resetChart();
     },
 
     render: function() {
+      var vm = this;
         return (
           React.createElement("g", {className: "chart", 
               width: this.props.width, 
@@ -75987,7 +75972,7 @@ var Path = React.createClass({displayName: "Path",
     setHighlightedNodes: function (node) {
       if (node.name !== "root") {
         var nodes = this.getAncestors(node);
-        this.setState({fillOpacity: 0.3, highlightedNodes: nodes});
+        // this.setState({fillOpacity: 0.3, highlightedNodes: nodes});
         SunburstActions.highlightNodes(nodes);
       }
     },
@@ -76002,7 +75987,7 @@ var Path = React.createClass({displayName: "Path",
         children: ['a', 'b', 'c'],
         size: 101,
         stroke: "#fff",
-        fillOpacity: vm.state.highlightedNodes.indexOf(node) >= 0 ? 1 : vm.state.fillOpacity,
+        fillOpacity: vm.props.highlightedNodes.indexOf(node) >= 0 ? 1 : vm.props.fillOpacity,
         fill: node.name !== "root" ? DashboardApi.calculateColor(node.name) : "#ffffff",
         key: uuid.v4(),
         onMouseOver: (function (selectedNode) {return function () { vm.setHighlightedNodes(selectedNode); }; })(node)
@@ -76038,7 +76023,8 @@ var SunburstChart = React.createClass({displayName: "SunburstChart",
       agencyName: "Agency Name",
       riskScore: "",
       highlightedNodes: [],
-      arcData: {}
+      arcData: {},
+      fillOpacity: 1
     };
   },
 
@@ -76061,9 +76047,15 @@ var SunburstChart = React.createClass({displayName: "SunburstChart",
 
   _onChange: function () {
     var highlightedNodes = SunburstStore.getHighlightedNodes();
-    var agencyName = highlightedNodes[0].name;
-    var riskScore = DashboardApi.dhsAgencyRiskScores[agencyName];
-    this.setState({agencyName: agencyName.toUpperCase(), riskScore: riskScore, highlightedNodes: highlightedNodes});
+    var fillOpacity = SunburstStore.getFillOpacity();
+    var agencyName = SunburstStore.getIsHighlighted() ? highlightedNodes[0].name : "";
+    var riskScore = SunburstStore.getIsHighlighted() ? DashboardApi.dhsAgencyRiskScores[agencyName] : "";
+    this.setState({
+                    agencyName: agencyName.toUpperCase(), 
+                    riskScore: riskScore, 
+                    highlightedNodes: highlightedNodes,
+                    fillOpacity: fillOpacity
+                  });
   },
 
   render: function() {
@@ -76077,10 +76069,12 @@ var SunburstChart = React.createClass({displayName: "SunburstChart",
                     width: this.props.width, 
                     radius: this.props.radius, 
                     arcData: this.state.arcData, 
-                    highlightedNodes: this.state.highlightedNodes})
+                    highlightedNodes: this.state.highlightedNodes, 
+                    fillOpacity: this.state.fillOpacity})
           ), 
           React.createElement(Info, {marginLeft: this.props.width, 
                 agencyName: this.state.agencyName, 
+                riskScore: this.state.riskScore, 
                 highlightedNodes: this.state.highlightedNodes})
         )
     );
@@ -76137,7 +76131,8 @@ module.exports = {
 	INITIALIZE: "INITIALIZE",
 	CREATE_AUTHOR: "CREATE_AUTHOR", 
 	UPDATE_AUTHOR: "UPDATE_AUTHOR",
-	UPDATE_NODES: "UPDATE_NODES"
+	UPDATE_NODES: "UPDATE_NODES",
+	RESET_CHART: "RESET_CHART"
 };
 
 },{}],449:[function(require,module,exports){
@@ -76271,6 +76266,8 @@ var CHANGE_EVENT = 'change';
 
 // private authors variable
 var _highlightedNodes = [];
+var _fillOpacity = 1;
+var _isHighlighted = false;
 
 var SunburstStore = assign({}, EventEmitter.prototype, {
 	addChangeListener: function (callback) {
@@ -76287,15 +76284,31 @@ var SunburstStore = assign({}, EventEmitter.prototype, {
 
 	getHighlightedNodes: function () {
 		return _highlightedNodes; 
+	},
+
+	getFillOpacity: function () {
+		return _fillOpacity;
+	},
+
+	getIsHighlighted: function () {
+		return _isHighlighted;
 	}
 });
 
 Dispatcher.register(function(action){
 	switch(action.actionType) { 
 		case ActionTypes.UPDATE_NODES: 
-			_highlightedNodes = action.nodes; 
+			_highlightedNodes = action.nodes;
+			_fillOpacity = 0.3;
+			_isHighlighted = true;
 			SunburstStore.emitChange(); 
 			break; 
+		case ActionTypes.RESET_CHART:
+			_isHighlighted = false;
+			_highlightedNodes = [];
+			_fillOpacity = action.opacity;
+			SunburstStore.emitChange();
+			break;
 		default: 
 			// no op
 	}

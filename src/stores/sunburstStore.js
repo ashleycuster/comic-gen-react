@@ -9,6 +9,8 @@ var CHANGE_EVENT = 'change';
 
 // private authors variable
 var _highlightedNodes = [];
+var _fillOpacity = 1;
+var _isHighlighted = false;
 
 var SunburstStore = assign({}, EventEmitter.prototype, {
 	addChangeListener: function (callback) {
@@ -25,15 +27,31 @@ var SunburstStore = assign({}, EventEmitter.prototype, {
 
 	getHighlightedNodes: function () {
 		return _highlightedNodes; 
+	},
+
+	getFillOpacity: function () {
+		return _fillOpacity;
+	},
+
+	getIsHighlighted: function () {
+		return _isHighlighted;
 	}
 });
 
 Dispatcher.register(function(action){
 	switch(action.actionType) { 
 		case ActionTypes.UPDATE_NODES: 
-			_highlightedNodes = action.nodes; 
+			_highlightedNodes = action.nodes;
+			_fillOpacity = 0.3;
+			_isHighlighted = true;
 			SunburstStore.emitChange(); 
 			break; 
+		case ActionTypes.RESET_CHART:
+			_isHighlighted = false;
+			_highlightedNodes = [];
+			_fillOpacity = action.opacity;
+			SunburstStore.emitChange();
+			break;
 		default: 
 			// no op
 	}

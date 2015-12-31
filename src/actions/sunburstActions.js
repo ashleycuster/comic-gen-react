@@ -12,6 +12,13 @@ var SunburstActions = {
 			actionType: ActionTypes.UPDATE_NODES,
 			nodes: updatedNodes
 		});
+	},
+
+	resetChart: function () {
+		Dispatcher.dispatch({
+			actionType: ActionTypes.RESET_CHART,
+			opacity: 1
+		});
 	}
 }; 
 
