@@ -32,7 +32,7 @@ Dispatcher.register(function(action){
 	switch(action.actionType) { 
 		case ActionTypes.UPDATE_NODES: 
 			_highlightedNodes = action.nodes; 
-			CircleChartStore.emitChange(); 
+			SunburstStore.emitChange(); 
 			break; 
 		default: 
 			// no op
