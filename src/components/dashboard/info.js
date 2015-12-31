@@ -1,16 +1,36 @@
 "use strict";
 
 var React = require('react'); 
+var SunburstStore = require('../../stores/sunburstStore');
 
 var InfoPanel = React.createClass({
 	propTypes: {
 		marginLeft: React.PropTypes.number.isRequired
 	},
 
+	getInitialState: function () {
+		return {
+			agencyName: "Agency Name"
+		};
+	},
+
+	componentWillMount: function () {
+		SunburstStore.addChangeListener(this._onChange);
+	},
+
+	componentWillUnmount: function () {
+		SunburstStore.removeChangeListener(this._onChange); 
+	},
+
+	_onChange: function () {
+		var highlightedNodes = SunburstStore.getHighlightedNodes();
+		this.setState({agencyName: highlightedNodes[0].name});
+	},
+
 	render: function () {
 		return (
 				<div width="1000px" style={{ marginLeft: this.props.marginLeft }}>
-					<h1>Agency Name, Risk#</h1>
+					<h1>{this.state.agencyName}, Risk Score</h1>
 					<table style={{ marginTop: "20px", marginLeft: "20px"}}>
 						<tr>
 							<td style={{width: "500px"}}>Number of endpoints identified</td>

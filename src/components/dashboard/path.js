@@ -38,7 +38,9 @@ var Path = React.createClass({
     height: React.PropTypes.number.isRequired, 
     width: React.PropTypes.number.isRequired,
     radius: React.PropTypes.number, 
-    arcData: React.PropTypes.object.isRequired
+    arcData: React.PropTypes.object.isRequired,
+    highlightedNodes: React.PropTypes.array,
+    fillOpacity: React.PropTypes.number
   },
 
     getDefaultProps: function () { 
@@ -72,7 +74,7 @@ var Path = React.createClass({
       var path = [];
       var current = node;
       while (current.parent) {
-        path.unshift(current.name);
+        path.unshift(current);
         current = current.parent;
       }
       return path;
@@ -99,9 +101,10 @@ var Path = React.createClass({
       }
     },
 
-    onPathMouseOver: function (node) {
+    setHighlightedNodes: function (node) {
       var nodes = this.getAncestors(node);
       this.setState({fillOpacity: 0.3, highlightedNodes: nodes});
+      SunburstActions.highlightNodes(nodes);
     },
 
     renderPaths: function (node) {
@@ -110,11 +113,14 @@ var Path = React.createClass({
         display: node.depth ? null : "none", 
         d: this.props.arc(node), 
         "fill-rule": "evenodd",
+        name: "sampleName!",
+        children: ['a', 'b', 'c'],
+        size: 101,
         stroke: "#fff",
-        fillOpacity: vm.state.highlightedNodes.indexOf(node.name) >= 0 ? 1 : vm.state.fillOpacity,
+        fillOpacity: vm.state.highlightedNodes.indexOf(node) >= 0 ? 1 : vm.state.fillOpacity,
         fill: node.name !== "root" ? DashboardApi.calculateColor(node.name) : "#ffffff",
         key: uuid.v4(),
-        onMouseOver: (function (selectedNode) {return function () { vm.onPathMouseOver(selectedNode); }; })(node)
+        onMouseOver: (function (selectedNode) {return function () { vm.setHighlightedNodes(selectedNode); }; })(node)
       };
       return (
         <path {...props} fill-rule="evenodd"></path>

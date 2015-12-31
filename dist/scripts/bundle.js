@@ -75953,7 +75953,7 @@ var ActionTypes = require('../constants/actionTypes');
 
 var SunburstActions = {
 
-	updateAuthor: function (nodes) {
+	highlightNodes: function (nodes) {
 		var updatedNodes = nodes; 
 
 		Dispatcher.dispatch({
@@ -76687,16 +76687,36 @@ module.exports = Dashboard;
 "use strict";
 
 var React = require('react'); 
+var SunburstStore = require('../../stores/sunburstStore');
 
 var InfoPanel = React.createClass({displayName: "InfoPanel",
 	propTypes: {
 		marginLeft: React.PropTypes.number.isRequired
 	},
 
+	getInitialState: function () {
+		return {
+			agencyName: "Agency Name"
+		};
+	},
+
+	componentWillMount: function () {
+		SunburstStore.addChangeListener(this._onChange);
+	},
+
+	componentWillUnmount: function () {
+		SunburstStore.removeChangeListener(this._onChange); 
+	},
+
+	_onChange: function () {
+		var highlightedNodes = SunburstStore.getHighlightedNodes();
+		this.setState({agencyName: highlightedNodes[0].name});
+	},
+
 	render: function () {
 		return (
 				React.createElement("div", {width: "1000px", style: { marginLeft: this.props.marginLeft}}, 
-					React.createElement("h1", null, "Agency Name, Risk#"), 
+					React.createElement("h1", null, this.state.agencyName, ", Risk Score"), 
 					React.createElement("table", {style: { marginTop: "20px", marginLeft: "20px"}}, 
 						React.createElement("tr", null, 
 							React.createElement("td", {style: {width: "500px"}}, "Number of endpoints identified"), 
@@ -76736,7 +76756,7 @@ var InfoPanel = React.createClass({displayName: "InfoPanel",
 
 module.exports = InfoPanel; 
 
-},{"react":424}],443:[function(require,module,exports){
+},{"../../stores/sunburstStore":453,"react":424}],443:[function(require,module,exports){
 /*
  *
  * This code was modified from the example found at http://bl.ocks.org/kerryrodden/7090426
@@ -76777,7 +76797,9 @@ var Path = React.createClass({displayName: "Path",
     height: React.PropTypes.number.isRequired, 
     width: React.PropTypes.number.isRequired,
     radius: React.PropTypes.number, 
-    arcData: React.PropTypes.object.isRequired
+    arcData: React.PropTypes.object.isRequired,
+    highlightedNodes: React.PropTypes.array,
+    fillOpacity: React.PropTypes.number
   },
 
     getDefaultProps: function () { 
@@ -76811,7 +76833,7 @@ var Path = React.createClass({displayName: "Path",
       var path = [];
       var current = node;
       while (current.parent) {
-        path.unshift(current.name);
+        path.unshift(current);
         current = current.parent;
       }
       return path;
@@ -76838,9 +76860,10 @@ var Path = React.createClass({displayName: "Path",
       }
     },
 
-    onPathMouseOver: function (node) {
+    setHighlightedNodes: function (node) {
       var nodes = this.getAncestors(node);
       this.setState({fillOpacity: 0.3, highlightedNodes: nodes});
+      SunburstActions.highlightNodes(nodes);
     },
 
     renderPaths: function (node) {
@@ -76849,11 +76872,14 @@ var Path = React.createClass({displayName: "Path",
         display: node.depth ? null : "none", 
         d: this.props.arc(node), 
         "fill-rule": "evenodd",
+        name: "sampleName!",
+        children: ['a', 'b', 'c'],
+        size: 101,
         stroke: "#fff",
-        fillOpacity: vm.state.highlightedNodes.indexOf(node.name) >= 0 ? 1 : vm.state.fillOpacity,
+        fillOpacity: vm.state.highlightedNodes.indexOf(node) >= 0 ? 1 : vm.state.fillOpacity,
         fill: node.name !== "root" ? DashboardApi.calculateColor(node.name) : "#ffffff",
         key: uuid.v4(),
-        onMouseOver: (function (selectedNode) {return function () { vm.onPathMouseOver(selectedNode); }; })(node)
+        onMouseOver: (function (selectedNode) {return function () { vm.setHighlightedNodes(selectedNode); }; })(node)
       };
       return (
         React.createElement("path", React.__spread({},  props, {"fill-rule": "evenodd"}))

@@ -5,7 +5,7 @@ var ActionTypes = require('../constants/actionTypes');
 
 var SunburstActions = {
 
-	updateAuthor: function (nodes) {
+	highlightNodes: function (nodes) {
 		var updatedNodes = nodes; 
 
 		Dispatcher.dispatch({
