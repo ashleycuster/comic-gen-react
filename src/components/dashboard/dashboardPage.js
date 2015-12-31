@@ -3,11 +3,6 @@
 var React = require('react'); 
 var Router = require('react-router'); 
 var SunburstChart = require('./sunburstChart'); 
-var Bar = require('./bar'); 
-var Path = require('./path');
-var Info = require('./info');
-var d3 = require('d3');
-var DashboardApi = require('../../api/dashboardApi');
 
 var width = 550; 
 var height = 400; 
