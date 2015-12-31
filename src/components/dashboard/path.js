@@ -102,9 +102,11 @@ var Path = React.createClass({
     },
 
     setHighlightedNodes: function (node) {
-      var nodes = this.getAncestors(node);
-      this.setState({fillOpacity: 0.3, highlightedNodes: nodes});
-      SunburstActions.highlightNodes(nodes);
+      if (node.name !== "root") {
+        var nodes = this.getAncestors(node);
+        this.setState({fillOpacity: 0.3, highlightedNodes: nodes});
+        SunburstActions.highlightNodes(nodes);
+      }
     },
 
     renderPaths: function (node) {

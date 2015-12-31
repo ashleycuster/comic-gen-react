@@ -76688,6 +76688,7 @@ module.exports = Dashboard;
 
 var React = require('react'); 
 var SunburstStore = require('../../stores/sunburstStore');
+var DashboardApi = require('../../api/dashboardApi');
 
 var InfoPanel = React.createClass({displayName: "InfoPanel",
 	propTypes: {
@@ -76696,7 +76697,8 @@ var InfoPanel = React.createClass({displayName: "InfoPanel",
 
 	getInitialState: function () {
 		return {
-			agencyName: "Agency Name"
+			agencyName: "Agency Name",
+			riskScore: ""
 		};
 	},
 
@@ -76710,13 +76712,16 @@ var InfoPanel = React.createClass({displayName: "InfoPanel",
 
 	_onChange: function () {
 		var highlightedNodes = SunburstStore.getHighlightedNodes();
-		this.setState({agencyName: highlightedNodes[0].name});
+		console.log(highlightedNodes);
+		var agencyName = highlightedNodes[0].name;
+		var riskScore = DashboardApi.dhsAgencyRiskScores[agencyName];
+		this.setState({agencyName: agencyName.toUpperCase(), riskScore: riskScore});
 	},
 
 	render: function () {
 		return (
 				React.createElement("div", {width: "1000px", style: { marginLeft: this.props.marginLeft}}, 
-					React.createElement("h1", null, this.state.agencyName, ", Risk Score"), 
+					React.createElement("h1", null, this.state.agencyName, ", Risk Score: ", this.state.riskScore), 
 					React.createElement("table", {style: { marginTop: "20px", marginLeft: "20px"}}, 
 						React.createElement("tr", null, 
 							React.createElement("td", {style: {width: "500px"}}, "Number of endpoints identified"), 
@@ -76756,7 +76761,7 @@ var InfoPanel = React.createClass({displayName: "InfoPanel",
 
 module.exports = InfoPanel; 
 
-},{"../../stores/sunburstStore":453,"react":424}],443:[function(require,module,exports){
+},{"../../api/dashboardApi":431,"../../stores/sunburstStore":453,"react":424}],443:[function(require,module,exports){
 /*
  *
  * This code was modified from the example found at http://bl.ocks.org/kerryrodden/7090426
@@ -76861,9 +76866,11 @@ var Path = React.createClass({displayName: "Path",
     },
 
     setHighlightedNodes: function (node) {
-      var nodes = this.getAncestors(node);
-      this.setState({fillOpacity: 0.3, highlightedNodes: nodes});
-      SunburstActions.highlightNodes(nodes);
+      if (node.name !== "root") {
+        var nodes = this.getAncestors(node);
+        this.setState({fillOpacity: 0.3, highlightedNodes: nodes});
+        SunburstActions.highlightNodes(nodes);
+      }
     },
 
     renderPaths: function (node) {

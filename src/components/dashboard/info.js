@@ -2,6 +2,7 @@
 
 var React = require('react'); 
 var SunburstStore = require('../../stores/sunburstStore');
+var DashboardApi = require('../../api/dashboardApi');
 
 var InfoPanel = React.createClass({
 	propTypes: {
@@ -10,7 +11,8 @@ var InfoPanel = React.createClass({
 
 	getInitialState: function () {
 		return {
-			agencyName: "Agency Name"
+			agencyName: "Agency Name",
+			riskScore: ""
 		};
 	},
 
@@ -24,13 +26,16 @@ var InfoPanel = React.createClass({
 
 	_onChange: function () {
 		var highlightedNodes = SunburstStore.getHighlightedNodes();
-		this.setState({agencyName: highlightedNodes[0].name});
+		console.log(highlightedNodes);
+		var agencyName = highlightedNodes[0].name;
+		var riskScore = DashboardApi.dhsAgencyRiskScores[agencyName];
+		this.setState({agencyName: agencyName.toUpperCase(), riskScore: riskScore});
 	},
 
 	render: function () {
 		return (
 				<div width="1000px" style={{ marginLeft: this.props.marginLeft }}>
-					<h1>{this.state.agencyName}, Risk Score</h1>
+					<h1>{this.state.agencyName}, Risk Score: {this.state.riskScore}</h1>
 					<table style={{ marginTop: "20px", marginLeft: "20px"}}>
 						<tr>
 							<td style={{width: "500px"}}>Number of endpoints identified</td>
