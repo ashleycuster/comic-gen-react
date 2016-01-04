@@ -9,11 +9,13 @@ var TextInput = React.createClass({
 		return (
 				<div style={{margin: "auto"}}>
 					<div>
-						<textarea rows={8}
+						<textarea style={{backgroundColor: "rgba(255,255,255,0.85)", marginTop: "15px", marginBottom: "15px"}}
+							rows={8}
 							cols={80}
 							placeholder={this.props.placeholder}
 							ref={this.props.name}
-							value={this.props.value} />
+							value={this.props.value}
+							onChange={this.props.onChange} />
 					</div>
 				</div>
 			);

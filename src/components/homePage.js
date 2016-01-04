@@ -6,30 +6,11 @@ var Link = Router.Link;
 var ComicInput = require('./home/ComicInput');
 
 var Home = React.createClass({
-	componentWillMount: function () {
-		document.body.style.backgroundImage = "url('images/banksy_robot_wall.jpg')";
-		document.body.style.backgroundRepeat = "no-repeat";
-		document.body.style.backgroundSize = "cover";
-	},
-
-	componentWillUnmount: function () {
-		document.body.style.backgroundImage = null;
-		document.body.style.backgroundRepeat = null;
-		document.body.style.backgroundSize = null;
-	},
 
 	render: function () {
 		return (
 			<div>
 				<ComicInput />
-				<div style={{marginRight: "5px", marginBottom: "5px", textAlign: "right", fontSize: "6px"}}>
-					<p>
-						Scott Lynch. Banksy NYC, Coney Island, Robot. 
-						<br />Taken October 28, 2013.
-						<br />Flickr Creative Commons
-						<br /><a href="https://creativecommons.org/licenses/by-sa/2.0/legalcode">Creative Commons License</a>
-					</p>
-				</div>
 			</div>
 				// <div className="jumbotron"> 
 				// 	<h1>React and D3</h1>

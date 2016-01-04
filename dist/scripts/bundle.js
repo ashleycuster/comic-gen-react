@@ -75027,7 +75027,25 @@ var AuthorActions = {
 
 module.exports = AuthorActions; 
 
-},{"../api/authorApi":344,"../constants/actionTypes":363,"../dispatcher/appDispatcher":364}],342:[function(require,module,exports){
+},{"../api/authorApi":345,"../constants/actionTypes":364,"../dispatcher/appDispatcher":365}],342:[function(require,module,exports){
+"use strict"; 
+
+var Dispatcher = require('../dispatcher/appDispatcher'); 
+var ActionTypes = require('../constants/actionTypes'); 
+
+var ComicActions = {
+
+	saveText: function (text) {
+		Dispatcher.dispatch({
+			actionType: ActionTypes.SAVE_TEXT,
+			text: text
+		});
+	}
+}; 
+
+module.exports = ComicActions; 
+
+},{"../constants/actionTypes":364,"../dispatcher/appDispatcher":365}],343:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher');
@@ -75047,7 +75065,7 @@ var InitializeActions = {
 
 module.exports = InitializeActions; 
 
-},{"../api/authorApi":344,"../constants/actionTypes":363,"../dispatcher/appDispatcher":364}],343:[function(require,module,exports){
+},{"../api/authorApi":345,"../constants/actionTypes":364,"../dispatcher/appDispatcher":365}],344:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -75074,7 +75092,7 @@ var SunburstActions = {
 
 module.exports = SunburstActions; 
 
-},{"../constants/actionTypes":363,"../dispatcher/appDispatcher":364}],344:[function(require,module,exports){
+},{"../constants/actionTypes":364,"../dispatcher/appDispatcher":365}],345:[function(require,module,exports){
 "use strict";
 
 //This file is mocking a web API by hitting hard coded data.
@@ -75126,7 +75144,7 @@ var AuthorApi = {
 
 module.exports = AuthorApi;
 
-},{"./authorData":345,"lodash":101}],345:[function(require,module,exports){
+},{"./authorData":346,"lodash":101}],346:[function(require,module,exports){
 module.exports = {
 	authors: 
 	[
@@ -75148,7 +75166,7 @@ module.exports = {
 	]
 };
 
-},{}],346:[function(require,module,exports){
+},{}],347:[function(require,module,exports){
 /*
  *
  * This code was modified from the example found at http://bl.ocks.org/kerryrodden/7090426
@@ -75310,7 +75328,7 @@ var DashboardApi = {
 
 module.exports = DashboardApi;
 
-},{"d3":55}],347:[function(require,module,exports){
+},{"d3":55}],348:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75349,7 +75367,7 @@ var About = React.createClass({displayName: "About",
 
 module.exports = About; 
 
-},{"react":316}],348:[function(require,module,exports){
+},{"react":316}],349:[function(require,module,exports){
 /*eslint-disable strict */
 
 var React = require('react'); 
@@ -75375,7 +75393,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App; 
 
-},{"./common/header":353,"jquery":100,"react":316,"react-router":145}],349:[function(require,module,exports){
+},{"./common/header":354,"jquery":100,"react":316,"react-router":145}],350:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75418,7 +75436,7 @@ var AuthorForm = React.createClass({displayName: "AuthorForm",
 
 module.exports = AuthorForm; 
 
-},{"../common/textInput":354,"react":316}],350:[function(require,module,exports){
+},{"../common/textInput":355,"react":316}],351:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75458,7 +75476,7 @@ var AuthorList = React.createClass({displayName: "AuthorList",
 
 module.exports = AuthorList; 
 
-},{"react":316,"react-router":145}],351:[function(require,module,exports){
+},{"react":316,"react-router":145}],352:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75502,7 +75520,7 @@ var AuthorPage = React.createClass({displayName: "AuthorPage",
 
 module.exports = AuthorPage; 
 
-},{"../../actions/authorActions":341,"../../stores/authorStore":367,"./authorList":350,"react":316,"react-router":145}],352:[function(require,module,exports){
+},{"../../actions/authorActions":341,"../../stores/authorStore":368,"./authorList":351,"react":316,"react-router":145}],353:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75599,7 +75617,7 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
 
 module.exports = ManageAuthorPage; 
 
-},{"../../actions/authorActions":341,"../../stores/authorStore":367,"./authorForm":349,"react":316,"react-router":145,"toastr":338}],353:[function(require,module,exports){
+},{"../../actions/authorActions":341,"../../stores/authorStore":368,"./authorForm":350,"react":316,"react-router":145,"toastr":338}],354:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75625,7 +75643,7 @@ var Header = React.createClass({displayName: "Header",
 
 module.exports = Header; 
 
-},{"react":316,"react-router":145}],354:[function(require,module,exports){
+},{"react":316,"react-router":145}],355:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75666,7 +75684,7 @@ var TextInput = React.createClass({displayName: "TextInput",
 
 module.exports = TextInput; 
 
-},{"react":316}],355:[function(require,module,exports){
+},{"react":316}],356:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75707,7 +75725,7 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 
 module.exports = Dashboard;         
 
-},{"./sunburstChart":358,"react":316,"react-router":145}],356:[function(require,module,exports){
+},{"./sunburstChart":359,"react":316,"react-router":145}],357:[function(require,module,exports){
 "use strict";
 
 var React = require('react'); 
@@ -75764,7 +75782,7 @@ var Info = React.createClass({displayName: "Info",
 
 module.exports = Info; 
 
-},{"../../stores/sunburstStore":368,"react":316}],357:[function(require,module,exports){
+},{"../../stores/sunburstStore":370,"react":316}],358:[function(require,module,exports){
 /*
  *
  * This code was modified from the example found at http://bl.ocks.org/kerryrodden/7090426
@@ -75872,7 +75890,7 @@ var Path = React.createClass({displayName: "Path",
 
 module.exports = Path;
 
-},{"../../actions/sunburstActions":343,"../../api/dashboardApi":346,"../../stores/sunburstStore":368,"d3":55,"lodash":101,"node-uuid":104,"react":316}],358:[function(require,module,exports){
+},{"../../actions/sunburstActions":344,"../../api/dashboardApi":347,"../../stores/sunburstStore":370,"d3":55,"lodash":101,"node-uuid":104,"react":316}],359:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75955,13 +75973,20 @@ var SunburstChart = React.createClass({displayName: "SunburstChart",
 
 module.exports = SunburstChart; 
 
-},{"../../api/dashboardApi":346,"../../stores/sunburstStore":368,"./info":356,"./path":357,"d3":55,"react":316}],359:[function(require,module,exports){
+},{"../../api/dashboardApi":347,"../../stores/sunburstStore":370,"./info":357,"./path":358,"d3":55,"react":316}],360:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
+var Router = require('react-router'); 
 var TextInput = require('./textInput');
+var ComicActions = require('../../actions/comicActions');
+var ComicStore = require('../../stores/comicStore');
+var toastr = require('toastr');
 
 var ComicInput = React.createClass({displayName: "ComicInput",
+	mixins: [
+		Router.Navigation
+	],
 
 	getDefaultProps: function () {
 		return {
@@ -75970,19 +75995,57 @@ var ComicInput = React.createClass({displayName: "ComicInput",
 				+ "King Arthur: To seek the Holy Grail. "
 				+ "Bridgekeeper: What... is the air-speed velocity of an unladen swallow? "
 				+ "King Arthur: What do you mean? An African or European swallow?",
-			name: "comic-input",
-			value: null
+			name: "comic-input"
 		};
+	},
+
+	getInitialState: function () {
+		return {
+			text: ''
+		};
+	},
+
+	componentWillMount: function () {
+		ComicStore.addChangeListener(this._onChange);
+	// 	document.body.style.backgroundImage = "url('images/hieroglyph_opaque.jpg')";
+	// 	document.body.style.backgroundRepeat = "no-repeat";
+	// 	document.body.style.backgroundSize = "cover";
+	},
+
+	componentWillUnmount: function () {
+		ComicStore.removeChangeListener(this._onChange); 
+		// document.body.style.backgroundImage = null;
+		// document.body.style.backgroundRepeat = null;
+		// document.body.style.backgroundSize = null;
+	},
+
+	_onChange: function () {
+		this.setState({text: ComicStore.getText()});
+	},
+
+	setTextState: function (event) {
+		var value = event.target.value;
+		return this.setState({text: value});
+	},
+
+	saveText: function (event) {
+		event.preventDefault();
+
+		ComicActions.saveText(this.state.text);
+
+		toastr.success('Conversation submitted.'); 
+		this.transitionTo('about'); 
 	},
 
 	render: function () {
 		return (
-				React.createElement("div", {style: {marginLeft: "auto", marginRight: "auto", textAlign: "center"}}, 
-					React.createElement("h1", null, "Enter your conversation here to create... ", React.createElement("br", null), " the most brilliant comic of all time"), 
+				React.createElement("div", {style: {marginLeft: "auto", marginRight: "auto", marginTop: "100px", textAlign: "center", color: "black"}}, 
+					React.createElement("h1", null, "Enter your conversation here to create ", React.createElement("br", null), " the most brilliant comic of all time"), 
 					React.createElement(TextInput, {placeholder: this.props.placeholder, 
 								name: this.props.name, 
-								value: this.props.value}), 
-					React.createElement("button", {type: "submit", value: "Next", className: "btn btn-primary btn-lg"}, "Next")
+								value: this.state.text, 
+								onChange: this.setTextState}), 
+					React.createElement("button", {type: "submit", value: "Next", className: "btn btn-primary btn-lg", onClick: this.saveText}, "Time to select some characters!")
 				)
 			);
 	}
@@ -75990,7 +76053,7 @@ var ComicInput = React.createClass({displayName: "ComicInput",
 
 module.exports = ComicInput;
 
-},{"./textInput":360,"react":316}],360:[function(require,module,exports){
+},{"../../actions/comicActions":342,"../../stores/comicStore":369,"./textInput":361,"react":316,"react-router":145,"toastr":338}],361:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76002,11 +76065,13 @@ var TextInput = React.createClass({displayName: "TextInput",
 		return (
 				React.createElement("div", {style: {margin: "auto"}}, 
 					React.createElement("div", null, 
-						React.createElement("textarea", {rows: 8, 
+						React.createElement("textarea", {style: {backgroundColor: "rgba(255,255,255,0.85)", marginTop: "15px", marginBottom: "15px"}, 
+							rows: 8, 
 							cols: 80, 
 							placeholder: this.props.placeholder, 
 							ref: this.props.name, 
-							value: this.props.value})
+							value: this.props.value, 
+							onChange: this.props.onChange})
 					)
 				)
 			);
@@ -76015,7 +76080,7 @@ var TextInput = React.createClass({displayName: "TextInput",
 
 module.exports = TextInput; 
 
-},{"react":316}],361:[function(require,module,exports){
+},{"react":316}],362:[function(require,module,exports){
 "use strict";
 
 var React = require('react'); 
@@ -76024,30 +76089,11 @@ var Link = Router.Link;
 var ComicInput = require('./home/ComicInput');
 
 var Home = React.createClass({displayName: "Home",
-	componentWillMount: function () {
-		document.body.style.backgroundImage = "url('images/banksy_robot_wall.jpg')";
-		document.body.style.backgroundRepeat = "no-repeat";
-		document.body.style.backgroundSize = "cover";
-	},
-
-	componentWillUnmount: function () {
-		document.body.style.backgroundImage = null;
-		document.body.style.backgroundRepeat = null;
-		document.body.style.backgroundSize = null;
-	},
 
 	render: function () {
 		return (
 			React.createElement("div", null, 
-				React.createElement(ComicInput, null), 
-				React.createElement("div", {style: {marginRight: "5px", marginBottom: "5px", textAlign: "right", fontSize: "6px"}}, 
-					React.createElement("p", null, 
-						"Scott Lynch. Banksy NYC, Coney Island, Robot.",  
-						React.createElement("br", null), "Taken October 28, 2013.", 
-						React.createElement("br", null), "Flickr Creative Commons", 
-						React.createElement("br", null), React.createElement("a", {href: "https://creativecommons.org/licenses/by-sa/2.0/legalcode"}, "Creative Commons License")
-					)
-				)
+				React.createElement(ComicInput, null)
 			)
 				// <div className="jumbotron"> 
 				// 	<h1>React and D3</h1>
@@ -76060,7 +76106,7 @@ var Home = React.createClass({displayName: "Home",
 
 module.exports = Home; 
 
-},{"./home/ComicInput":359,"react":316,"react-router":145}],362:[function(require,module,exports){
+},{"./home/ComicInput":360,"react":316,"react-router":145}],363:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76080,7 +76126,7 @@ var NotFoundPage = React.createClass({displayName: "NotFoundPage",
 
 module.exports = NotFoundPage; 
 
-},{"react":316,"react-router":145}],363:[function(require,module,exports){
+},{"react":316,"react-router":145}],364:[function(require,module,exports){
 "use strict"; 
 
 module.exports = { 
@@ -76088,10 +76134,11 @@ module.exports = {
 	CREATE_AUTHOR: "CREATE_AUTHOR", 
 	UPDATE_AUTHOR: "UPDATE_AUTHOR",
 	UPDATE_NODES: "UPDATE_NODES",
-	RESET_CHART: "RESET_CHART"
+	RESET_CHART: "RESET_CHART",
+	SAVE_TEXT: "SAVE_TEXT"
 };
 
-},{}],364:[function(require,module,exports){
+},{}],365:[function(require,module,exports){
 /**
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -76109,7 +76156,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":86}],365:[function(require,module,exports){
+},{"flux":86}],366:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76124,7 +76171,7 @@ Router.run(routes, function(Handler) {
 	ReactDOM.render(React.createElement(Handler, null), document.getElementById('app')); 
 });
 
-},{"./actions/initializeActions":342,"./routes":366,"react":316,"react-dom":120,"react-router":145}],366:[function(require,module,exports){
+},{"./actions/initializeActions":343,"./routes":367,"react":316,"react-dom":120,"react-router":145}],367:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76152,7 +76199,7 @@ var routes = (
 
 module.exports = routes; 
 
-},{"./components/about/aboutPage":347,"./components/app":348,"./components/authors/authorPage":351,"./components/authors/manageAuthorsPage":352,"./components/dashboard/dashboardPage":355,"./components/homePage":361,"./components/notFoundPage":362,"react":316,"react-router":145}],367:[function(require,module,exports){
+},{"./components/about/aboutPage":348,"./components/app":349,"./components/authors/authorPage":352,"./components/authors/manageAuthorsPage":353,"./components/dashboard/dashboardPage":356,"./components/homePage":362,"./components/notFoundPage":363,"react":316,"react-router":145}],368:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -76210,7 +76257,51 @@ Dispatcher.register(function(action){
 
 module.exports = AuthorStore; 
 
-},{"../constants/actionTypes":363,"../dispatcher/appDispatcher":364,"events":83,"lodash":101,"object-assign":105}],368:[function(require,module,exports){
+},{"../constants/actionTypes":364,"../dispatcher/appDispatcher":365,"events":83,"lodash":101,"object-assign":105}],369:[function(require,module,exports){
+"use strict"; 
+
+var Dispatcher = require('../dispatcher/appDispatcher'); 
+var ActionTypes = require('../constants/actionTypes');
+var EventEmitter = require('events').EventEmitter; 
+var assign = require('object-assign'); 
+var _ = require('lodash');
+var CHANGE_EVENT = 'change'; 
+
+// private text variable
+var _text = '';
+
+var ComicStore = assign({}, EventEmitter.prototype, {
+	addChangeListener: function (callback) {
+		this.on(CHANGE_EVENT, callback); 
+	},
+
+	removeChangeListener: function (callback) {
+		this.removeListener(CHANGE_EVENT, callback);
+	},
+
+	emitChange: function () {
+		this.emit(CHANGE_EVENT); 
+	}, 
+
+	getText: function () {
+		return _text; 
+	}
+});
+
+Dispatcher.register(function(action){
+	switch(action.actionType) { 
+		case ActionTypes.SAVE_TEXT: 
+			_text = action.text;
+			ComicStore.emitChange(); 
+			break; 
+		default: 
+			// no op
+	}
+});
+
+module.exports = ComicStore; 
+
+},{"../constants/actionTypes":364,"../dispatcher/appDispatcher":365,"events":83,"lodash":101,"object-assign":105}],370:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -76272,4 +76363,4 @@ Dispatcher.register(function(action){
 
 module.exports = SunburstStore; 
 
-},{"../constants/actionTypes":363,"../dispatcher/appDispatcher":364,"events":83,"lodash":101,"object-assign":105}]},{},[365]);
+},{"../constants/actionTypes":364,"../dispatcher/appDispatcher":365,"events":83,"lodash":101,"object-assign":105}]},{},[366]);
