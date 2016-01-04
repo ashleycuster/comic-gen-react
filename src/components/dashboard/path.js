@@ -49,25 +49,6 @@ var Path = React.createClass({
       };
     },
 
-    // getInitialState: function () {
-    //   return {
-    //     fillOpacity: 1,
-    //     highlightedNodes: []
-    //   };
-    // },
-
-    // componentWillMount: function () {
-    //   CircleChartStore.addChangeListener(this._onChange);
-    // },
-
-    // componentWillUnmount: function () {
-    //   CircleChartStore.removeChangeListener(this._onChange); 
-    // },
-
-    // _onChange: function () {
-    //   this.setState({ highlightedNodes: CircleChartStore.getHighlightedNodes() }); 
-    // },
-
     // Given a node in a partition layout, return an array of all of its ancestor
     // nodes, highest first, but excluding the root.
     getAncestors: function (node) {
@@ -110,9 +91,6 @@ var Path = React.createClass({
         display: node.depth ? null : "none", 
         d: this.props.arc(node), 
         "fill-rule": "evenodd",
-        name: "sampleName!",
-        children: ['a', 'b', 'c'],
-        size: 101,
         stroke: "#fff",
         fillOpacity: vm.props.highlightedNodes.indexOf(node) >= 0 ? 1 : vm.props.fillOpacity,
         fill: node.name !== "root" ? DashboardApi.calculateColor(node.name) : "#ffffff",
@@ -120,7 +98,7 @@ var Path = React.createClass({
         onMouseOver: (function (selectedNode) {return function () { vm.setHighlightedNodes(selectedNode); }; })(node)
       };
       return (
-        <path {...props} fill-rule="evenodd"></path>
+        <path {...props}></path>
       );
     }
 });
