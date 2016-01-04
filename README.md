@@ -9,7 +9,7 @@ React and Flux application that converts text to comic panels
 
 ### Character selection
 - [ ] List of characters extracted from text
-- [ ] svg image of character selection
+- [ ] Choice of character shape
 - [ ] Button ('Finished') triggers text parse logic, routes to comic page
 
 ### Comic strip
