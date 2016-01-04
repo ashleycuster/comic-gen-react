@@ -75027,7 +75027,7 @@ var AuthorActions = {
 
 module.exports = AuthorActions; 
 
-},{"../api/authorApi":345,"../constants/actionTypes":364,"../dispatcher/appDispatcher":365}],342:[function(require,module,exports){
+},{"../api/authorApi":345,"../constants/actionTypes":365,"../dispatcher/appDispatcher":366}],342:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -75045,7 +75045,7 @@ var ComicActions = {
 
 module.exports = ComicActions; 
 
-},{"../constants/actionTypes":364,"../dispatcher/appDispatcher":365}],343:[function(require,module,exports){
+},{"../constants/actionTypes":365,"../dispatcher/appDispatcher":366}],343:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher');
@@ -75065,7 +75065,7 @@ var InitializeActions = {
 
 module.exports = InitializeActions; 
 
-},{"../api/authorApi":345,"../constants/actionTypes":364,"../dispatcher/appDispatcher":365}],344:[function(require,module,exports){
+},{"../api/authorApi":345,"../constants/actionTypes":365,"../dispatcher/appDispatcher":366}],344:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -75092,7 +75092,7 @@ var SunburstActions = {
 
 module.exports = SunburstActions; 
 
-},{"../constants/actionTypes":364,"../dispatcher/appDispatcher":365}],345:[function(require,module,exports){
+},{"../constants/actionTypes":365,"../dispatcher/appDispatcher":366}],345:[function(require,module,exports){
 "use strict";
 
 //This file is mocking a web API by hitting hard coded data.
@@ -75167,6 +75167,29 @@ module.exports = {
 };
 
 },{}],347:[function(require,module,exports){
+"use strict"; 
+
+var ComicApi = {
+
+	findCharacters: function (text) {
+		var uniqueNames = [];
+		var regex = /\b\w+:\s+/g;
+		var nameArray = text.match(regex);
+		var name;
+		for (var index in nameArray) {
+			name = nameArray[index].split(':', 1)[0];
+			if (uniqueNames.indexOf(name) < 0) {
+				uniqueNames.push(name);
+			}
+		}
+		console.log(uniqueNames);
+		return uniqueNames;
+	}
+};
+
+module.exports = ComicApi; 
+
+},{}],348:[function(require,module,exports){
 /*
  *
  * This code was modified from the example found at http://bl.ocks.org/kerryrodden/7090426
@@ -75328,46 +75351,7 @@ var DashboardApi = {
 
 module.exports = DashboardApi;
 
-},{"d3":55}],348:[function(require,module,exports){
-"use strict"; 
-
-var React = require('react'); 
-
-var About = React.createClass({displayName: "About",
-	statics: {
-		willTransitionTo: function(transition, params, query, callback) {
-			if (!confirm('Are you sure you want to read a page that\'s this boring?')) {
-				transition.about(); 
-			}
-			else { 
-				callback(); 
-			}
-		}, 
-		willTransitionFrom: function(transition, component) {
-			if (!confirm('Are you sure you want to leave a page this exciting?')) {
-				transition.about(); 
-			}
-		}
-	},
-	render: function () {
-		return (
-				React.createElement("div", null, 
-					React.createElement("h1", null, "About"), 
-					React.createElement("p", null, 
-						"This application...",  
-						React.createElement("ul", null, 
-							React.createElement("li", null, "React"), 
-							React.createElement("li", null, "React Router")
-						)
-					)
-				) 
-			);
-	}
-});
-
-module.exports = About; 
-
-},{"react":316}],349:[function(require,module,exports){
+},{"d3":55}],349:[function(require,module,exports){
 /*eslint-disable strict */
 
 var React = require('react'); 
@@ -75393,7 +75377,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App; 
 
-},{"./common/header":354,"jquery":100,"react":316,"react-router":145}],350:[function(require,module,exports){
+},{"./common/header":355,"jquery":100,"react":316,"react-router":145}],350:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75436,7 +75420,7 @@ var AuthorForm = React.createClass({displayName: "AuthorForm",
 
 module.exports = AuthorForm; 
 
-},{"../common/textInput":355,"react":316}],351:[function(require,module,exports){
+},{"../common/textInput":356,"react":316}],351:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75520,7 +75504,7 @@ var AuthorPage = React.createClass({displayName: "AuthorPage",
 
 module.exports = AuthorPage; 
 
-},{"../../actions/authorActions":341,"../../stores/authorStore":368,"./authorList":351,"react":316,"react-router":145}],353:[function(require,module,exports){
+},{"../../actions/authorActions":341,"../../stores/authorStore":369,"./authorList":351,"react":316,"react-router":145}],353:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75617,7 +75601,63 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
 
 module.exports = ManageAuthorPage; 
 
-},{"../../actions/authorActions":341,"../../stores/authorStore":368,"./authorForm":350,"react":316,"react-router":145,"toastr":338}],354:[function(require,module,exports){
+},{"../../actions/authorActions":341,"../../stores/authorStore":369,"./authorForm":350,"react":316,"react-router":145,"toastr":338}],354:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+var Router = require('react-router'); 
+var ComicActions = require('../../actions/comicActions');
+var ComicStore = require('../../stores/comicStore');
+var toastr = require('toastr');
+
+var CharacterPage = React.createClass({displayName: "CharacterPage",
+	mixins: [
+		Router.Navigation
+	],
+
+	getInitialState: function () {
+		return {
+			possibleCharacters: ComicStore.getPossibleCharacters(),	// possible names extracted from text
+			selectedCharacters: [],	// user-confirmed names
+			characterMap: {} 		// character name mapped to image
+		};
+	},
+
+	componentWillMount: function () {
+		ComicStore.addChangeListener(this._onChange);
+	},
+
+	componentWillUnmount: function () {
+		ComicStore.removeChangeListener(this._onChange); 
+	},
+
+	_onChange: function () {
+		this.setState({possibleCharacters: ComicStore.getPossibleCharacters()});
+		console.log(this.state.possibleCharacters);
+		console.log(ComicStore.getPossibleCharacters());
+	},
+
+	setCharacterState: function (event) {
+
+	},
+
+	saveCharacter: function (event) {
+		event.preventDefault();
+
+		toastr.success('Characters saved!'); 
+		// this.transitionTo('about'); 
+	},
+
+	render: function () {
+		return (
+				React.createElement("p", null, "Your first character is ", this.state.possibleCharacters[0])
+			);
+	}
+});
+
+module.exports = CharacterPage; 
+
+},{"../../actions/comicActions":342,"../../stores/comicStore":370,"react":316,"react-router":145,"toastr":338}],355:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75632,7 +75672,7 @@ var Header = React.createClass({displayName: "Header",
 						React.createElement("ul", {className: "nav navbar-nav"}, 
 							React.createElement("li", null, React.createElement(Link, {to: "app"}, "ComicGen")), 
 							React.createElement("li", null, React.createElement(Link, {to: "app"}, "Home")), 
-							React.createElement("li", null, React.createElement(Link, {to: "about"}, "About")), 
+							React.createElement("li", null, React.createElement(Link, {to: "characters"}, "Character Selection")), 
 							React.createElement("li", null, React.createElement(Link, {to: "dashboard"}, "Dashboard"))
 						)
 					)
@@ -75643,7 +75683,7 @@ var Header = React.createClass({displayName: "Header",
 
 module.exports = Header; 
 
-},{"react":316,"react-router":145}],355:[function(require,module,exports){
+},{"react":316,"react-router":145}],356:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75684,7 +75724,7 @@ var TextInput = React.createClass({displayName: "TextInput",
 
 module.exports = TextInput; 
 
-},{"react":316}],356:[function(require,module,exports){
+},{"react":316}],357:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75725,7 +75765,7 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 
 module.exports = Dashboard;         
 
-},{"./sunburstChart":359,"react":316,"react-router":145}],357:[function(require,module,exports){
+},{"./sunburstChart":360,"react":316,"react-router":145}],358:[function(require,module,exports){
 "use strict";
 
 var React = require('react'); 
@@ -75782,7 +75822,7 @@ var Info = React.createClass({displayName: "Info",
 
 module.exports = Info; 
 
-},{"../../stores/sunburstStore":370,"react":316}],358:[function(require,module,exports){
+},{"../../stores/sunburstStore":371,"react":316}],359:[function(require,module,exports){
 /*
  *
  * This code was modified from the example found at http://bl.ocks.org/kerryrodden/7090426
@@ -75890,7 +75930,7 @@ var Path = React.createClass({displayName: "Path",
 
 module.exports = Path;
 
-},{"../../actions/sunburstActions":344,"../../api/dashboardApi":347,"../../stores/sunburstStore":370,"d3":55,"lodash":101,"node-uuid":104,"react":316}],359:[function(require,module,exports){
+},{"../../actions/sunburstActions":344,"../../api/dashboardApi":348,"../../stores/sunburstStore":371,"d3":55,"lodash":101,"node-uuid":104,"react":316}],360:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -75973,7 +76013,7 @@ var SunburstChart = React.createClass({displayName: "SunburstChart",
 
 module.exports = SunburstChart; 
 
-},{"../../api/dashboardApi":347,"../../stores/sunburstStore":370,"./info":357,"./path":358,"d3":55,"react":316}],360:[function(require,module,exports){
+},{"../../api/dashboardApi":348,"../../stores/sunburstStore":371,"./info":358,"./path":359,"d3":55,"react":316}],361:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -76034,7 +76074,7 @@ var ComicInput = React.createClass({displayName: "ComicInput",
 		ComicActions.saveText(this.state.text);
 
 		toastr.success('Conversation submitted.'); 
-		this.transitionTo('about'); 
+		this.transitionTo('characters'); 
 	},
 
 	render: function () {
@@ -76053,7 +76093,7 @@ var ComicInput = React.createClass({displayName: "ComicInput",
 
 module.exports = ComicInput;
 
-},{"../../actions/comicActions":342,"../../stores/comicStore":369,"./textInput":361,"react":316,"react-router":145,"toastr":338}],361:[function(require,module,exports){
+},{"../../actions/comicActions":342,"../../stores/comicStore":370,"./textInput":362,"react":316,"react-router":145,"toastr":338}],362:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76080,7 +76120,7 @@ var TextInput = React.createClass({displayName: "TextInput",
 
 module.exports = TextInput; 
 
-},{"react":316}],362:[function(require,module,exports){
+},{"react":316}],363:[function(require,module,exports){
 "use strict";
 
 var React = require('react'); 
@@ -76106,7 +76146,7 @@ var Home = React.createClass({displayName: "Home",
 
 module.exports = Home; 
 
-},{"./home/ComicInput":360,"react":316,"react-router":145}],363:[function(require,module,exports){
+},{"./home/ComicInput":361,"react":316,"react-router":145}],364:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76126,7 +76166,7 @@ var NotFoundPage = React.createClass({displayName: "NotFoundPage",
 
 module.exports = NotFoundPage; 
 
-},{"react":316,"react-router":145}],364:[function(require,module,exports){
+},{"react":316,"react-router":145}],365:[function(require,module,exports){
 "use strict"; 
 
 module.exports = { 
@@ -76138,7 +76178,7 @@ module.exports = {
 	SAVE_TEXT: "SAVE_TEXT"
 };
 
-},{}],365:[function(require,module,exports){
+},{}],366:[function(require,module,exports){
 /**
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -76156,7 +76196,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":86}],366:[function(require,module,exports){
+},{"flux":86}],367:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76171,7 +76211,7 @@ Router.run(routes, function(Handler) {
 	ReactDOM.render(React.createElement(Handler, null), document.getElementById('app')); 
 });
 
-},{"./actions/initializeActions":343,"./routes":367,"react":316,"react-dom":120,"react-router":145}],367:[function(require,module,exports){
+},{"./actions/initializeActions":343,"./routes":368,"react":316,"react-dom":120,"react-router":145}],368:[function(require,module,exports){
 "use strict"; 
 
 var React = require('react'); 
@@ -76188,18 +76228,15 @@ var routes = (
 		React.createElement(Route, {name: "authors", handler: require('./components/authors/authorPage')}), 
 		React.createElement(Route, {name: "addAuthor", path: "author", handler: require('./components/authors/manageAuthorsPage')}), 
 		React.createElement(Route, {name: "manageAuthors", path: "author/:id", handler: require('./components/authors/manageAuthorsPage')}), 
-		React.createElement(Route, {name: "about", handler: require('./components/about/aboutPage')}), 
 		React.createElement(Route, {name: "dashboard", handler: require('./components/dashboard/dashboardPage')}), 
-		React.createElement(NotFoundRoute, {handler: require('./components/notFoundPage')}), 
-		React.createElement(Redirect, {from: "about-us", to: "about"}), 
-		React.createElement(Redirect, {from: "awthurs", to: "authors"}), 
-		React.createElement(Redirect, {from: "about/*", to: "about"})
+		React.createElement(Route, {name: "characters", handler: require('./components/characters/characterPage')}), 
+		React.createElement(NotFoundRoute, {handler: require('./components/notFoundPage')})
 	)
 );
 
 module.exports = routes; 
 
-},{"./components/about/aboutPage":348,"./components/app":349,"./components/authors/authorPage":352,"./components/authors/manageAuthorsPage":353,"./components/dashboard/dashboardPage":356,"./components/homePage":362,"./components/notFoundPage":363,"react":316,"react-router":145}],368:[function(require,module,exports){
+},{"./components/app":349,"./components/authors/authorPage":352,"./components/authors/manageAuthorsPage":353,"./components/characters/characterPage":354,"./components/dashboard/dashboardPage":357,"./components/homePage":363,"./components/notFoundPage":364,"react":316,"react-router":145}],369:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -76257,7 +76294,7 @@ Dispatcher.register(function(action){
 
 module.exports = AuthorStore; 
 
-},{"../constants/actionTypes":364,"../dispatcher/appDispatcher":365,"events":83,"lodash":101,"object-assign":105}],369:[function(require,module,exports){
+},{"../constants/actionTypes":365,"../dispatcher/appDispatcher":366,"events":83,"lodash":101,"object-assign":105}],370:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -76266,9 +76303,13 @@ var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign'); 
 var _ = require('lodash');
 var CHANGE_EVENT = 'change'; 
+var ComicApi = require('../api/comicApi');
 
 // private text variable
 var _text = '';
+var _possibleCharacters = [];
+var _selectedCharacters = [];
+var _characterMap = {};
 
 var ComicStore = assign({}, EventEmitter.prototype, {
 	addChangeListener: function (callback) {
@@ -76285,6 +76326,14 @@ var ComicStore = assign({}, EventEmitter.prototype, {
 
 	getText: function () {
 		return _text; 
+	},
+
+	setPossibleCharacters: function () {
+		_possibleCharacters = ComicApi.findCharacters(_text);
+	},
+
+	getPossibleCharacters: function () {
+		return _possibleCharacters;
 	}
 });
 
@@ -76292,6 +76341,7 @@ Dispatcher.register(function(action){
 	switch(action.actionType) { 
 		case ActionTypes.SAVE_TEXT: 
 			_text = action.text;
+			ComicStore.setPossibleCharacters();
 			ComicStore.emitChange(); 
 			break; 
 		default: 
@@ -76301,7 +76351,7 @@ Dispatcher.register(function(action){
 
 module.exports = ComicStore; 
 
-},{"../constants/actionTypes":364,"../dispatcher/appDispatcher":365,"events":83,"lodash":101,"object-assign":105}],370:[function(require,module,exports){
+},{"../api/comicApi":347,"../constants/actionTypes":365,"../dispatcher/appDispatcher":366,"events":83,"lodash":101,"object-assign":105}],371:[function(require,module,exports){
 "use strict"; 
 
 var Dispatcher = require('../dispatcher/appDispatcher'); 
@@ -76363,4 +76413,4 @@ Dispatcher.register(function(action){
 
 module.exports = SunburstStore; 
 
-},{"../constants/actionTypes":364,"../dispatcher/appDispatcher":365,"events":83,"lodash":101,"object-assign":105}]},{},[366]);
+},{"../constants/actionTypes":365,"../dispatcher/appDispatcher":366,"events":83,"lodash":101,"object-assign":105}]},{},[367]);

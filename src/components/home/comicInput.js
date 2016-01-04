@@ -58,7 +58,7 @@ var ComicInput = React.createClass({
 		ComicActions.saveText(this.state.text);
 
 		toastr.success('Conversation submitted.'); 
-		this.transitionTo('about'); 
+		this.transitionTo('characters'); 
 	},
 
 	render: function () {
