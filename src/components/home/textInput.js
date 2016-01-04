@@ -9,7 +9,7 @@ var TextInput = React.createClass({
 		return (
 				<div style={{margin: "auto"}}>
 					<div>
-						<textarea style={{backgroundColor: "rgba(255,255,255,0.85)", marginTop: "15px", marginBottom: "15px"}}
+						<textarea style={{backgroundColor: "rgba(255,255,255,0.85)", marginTop: "30px", marginBottom: "30px"}}
 							rows={8}
 							cols={80}
 							placeholder={this.props.placeholder}

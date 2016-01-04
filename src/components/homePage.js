@@ -4,8 +4,17 @@ var React = require('react');
 var Router = require('react-router'); 
 var Link = Router.Link;
 var ComicInput = require('./home/ComicInput');
+var WebFont = require('webfontloader');
+
 
 var Home = React.createClass({
+	componentWillMount: function () {
+		WebFont.load({
+			google: {
+				families: ['Permanent Marker', 'Bangers']
+			}
+		});
+	},
 
 	render: function () {
 		return (
