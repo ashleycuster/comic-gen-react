@@ -76038,7 +76038,17 @@ var Home = React.createClass({displayName: "Home",
 
 	render: function () {
 		return (
-			React.createElement(ComicInput, null)
+			React.createElement("div", null, 
+				React.createElement(ComicInput, null), 
+				React.createElement("div", {style: {marginRight: "5px", marginBottom: "5px", textAlign: "right", fontSize: "6px"}}, 
+					React.createElement("p", null, 
+						"Scott Lynch. Banksy NYC, Coney Island, Robot.",  
+						React.createElement("br", null), "Taken October 28, 2013.", 
+						React.createElement("br", null), "Flickr Creative Commons", 
+						React.createElement("br", null), React.createElement("a", {href: "https://creativecommons.org/licenses/by-sa/2.0/legalcode"}, "Creative Commons License")
+					)
+				)
+			)
 				// <div className="jumbotron"> 
 				// 	<h1>React and D3</h1>
 				// 	<p>React, Router, Flux, and D3 for ultra responsive web apps and data visualizations</p> 
