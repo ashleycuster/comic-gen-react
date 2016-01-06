@@ -63,8 +63,8 @@ var ComicInput = React.createClass({
 
 	render: function () {
 		return (
-				<div style={{marginLeft: "auto", marginRight: "auto", marginTop: "100px", textAlign: "center", color: "black", fontFamily: "Permanent Marker"}}>
-					<h1 style={{fontFamily: "Bangers"}}>Enter your conversation here to create the greatest comic of all time</h1>
+				<div style={{marginLeft: "auto", marginRight: "auto", marginTop: "100px", textAlign: "center", color: "black", fontFamily: "Poiret One"}}>
+					<h1 style={{fontFamily: "Poiret One", color: "white"}}>Enter your conversation here to create the greatest comic of all time</h1>
 					<TextInput placeholder={this.props.placeholder}
 								name={this.props.name}
 								value={this.state.text}

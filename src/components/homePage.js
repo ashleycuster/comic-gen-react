@@ -11,9 +11,15 @@ var Home = React.createClass({
 	componentWillMount: function () {
 		WebFont.load({
 			google: {
-				families: ['Permanent Marker', 'Bangers']
+				families: ['Permanent Marker', 'Bangers', 'Poiret One']
 			}
 		});
+
+		document.body.style.backgroundColor = "#ff954f";
+	},
+
+	componentWillUnmount: function () {
+		document.body.style.backgroundColor = null;
 	},
 
 	render: function () {

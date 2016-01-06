@@ -76097,8 +76097,8 @@ var ComicInput = React.createClass({displayName: "ComicInput",
 
 	render: function () {
 		return (
-				React.createElement("div", {style: {marginLeft: "auto", marginRight: "auto", marginTop: "100px", textAlign: "center", color: "black", fontFamily: "Permanent Marker"}}, 
-					React.createElement("h1", {style: {fontFamily: "Bangers"}}, "Enter your conversation here to create the greatest comic of all time"), 
+				React.createElement("div", {style: {marginLeft: "auto", marginRight: "auto", marginTop: "100px", textAlign: "center", color: "black", fontFamily: "Poiret One"}}, 
+					React.createElement("h1", {style: {fontFamily: "Poiret One", color: "white"}}, "Enter your conversation here to create the greatest comic of all time"), 
 					React.createElement(TextInput, {placeholder: this.props.placeholder, 
 								name: this.props.name, 
 								value: this.state.text, 
@@ -76152,9 +76152,15 @@ var Home = React.createClass({displayName: "Home",
 	componentWillMount: function () {
 		WebFont.load({
 			google: {
-				families: ['Permanent Marker', 'Bangers']
+				families: ['Permanent Marker', 'Bangers', 'Poiret One']
 			}
 		});
+
+		document.body.style.backgroundColor = "#ff954f";
+	},
+
+	componentWillUnmount: function () {
+		document.body.style.backgroundColor = null;
 	},
 
 	render: function () {
