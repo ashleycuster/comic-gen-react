@@ -75386,7 +75386,6 @@ var App = React.createClass({displayName: "App",
 	render: function () {
 		return (
 			React.createElement("div", null, 
-				React.createElement(Header, null), 
 				React.createElement("div", {className: "container-fluid"}, 
 					React.createElement(RouteHandler, null)
 				)
@@ -76048,11 +76047,11 @@ var ComicInput = React.createClass({displayName: "ComicInput",
 
 	getDefaultProps: function () {
 		return {
-			placeholder: "King Arthur: It is 'Arthur', King of the Britons. "
+			placeholder: "Arthur: It is 'Arthur', King of the Britons. "
 				+ "Bridgekeeper: What... is your quest? "
-				+ "King Arthur: To seek the Holy Grail. "
+				+ "Arthur: To seek the Holy Grail. "
 				+ "Bridgekeeper: What... is the air-speed velocity of an unladen swallow? "
-				+ "King Arthur: What do you mean? An African or European swallow?",
+				+ "Arthur: What do you mean? An African or European swallow?",
 			name: "comic-input"
 		};
 	},
@@ -76123,7 +76122,7 @@ var TextInput = React.createClass({displayName: "TextInput",
 		return (
 				React.createElement("div", {style: {margin: "auto"}}, 
 					React.createElement("div", null, 
-						React.createElement("textarea", {style: {backgroundColor: "rgba(255,255,255,0.85)", marginTop: "30px", marginBottom: "30px"}, 
+						React.createElement("textarea", {style: {backgroundColor: "rgba(255,255,255,0.5)", marginTop: "30px", marginBottom: "30px", border: "none", borderRadius: "10px", padding: "10px"}, 
 							rows: 8, 
 							cols: 80, 
 							placeholder: this.props.placeholder, 

@@ -14,11 +14,11 @@ var ComicInput = React.createClass({
 
 	getDefaultProps: function () {
 		return {
-			placeholder: "King Arthur: It is 'Arthur', King of the Britons. "
+			placeholder: "Arthur: It is 'Arthur', King of the Britons. "
 				+ "Bridgekeeper: What... is your quest? "
-				+ "King Arthur: To seek the Holy Grail. "
+				+ "Arthur: To seek the Holy Grail. "
 				+ "Bridgekeeper: What... is the air-speed velocity of an unladen swallow? "
-				+ "King Arthur: What do you mean? An African or European swallow?",
+				+ "Arthur: What do you mean? An African or European swallow?",
 			name: "comic-input"
 		};
 	},
