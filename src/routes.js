@@ -11,9 +11,6 @@ var Redirect = Router.Redirect;
 var routes = (
 	<Route name="app" path="/" handler={require('./components/app')}> 
 		<DefaultRoute handler={require('./components/homePage')} />
-		<Route name="authors" handler={require('./components/authors/authorPage')} />
-		<Route name="addAuthor" path="author" handler={require('./components/authors/manageAuthorsPage')} />
-		<Route name="manageAuthors" path="author/:id" handler={require('./components/authors/manageAuthorsPage')} />
 		<Route name="dashboard" handler={require('./components/dashboard/dashboardPage')} />
 		<Route name="characters" handler={require('./components/characters/characterPage')} />
 		<NotFoundRoute handler={require('./components/notFoundPage')} />
