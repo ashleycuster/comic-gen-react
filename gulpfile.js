@@ -21,7 +21,8 @@ var config = {
 			'node_modules/bootstrap/dist/css/bootstrap.min.css', 
 			'node_modules/bootstrap/dist/css/bootstrap-theme.min.css', 
 			'node_modules/toastr/build/toastr.css',
-			'src/styles/sequences.css'
+			'src/styles/sequences.css',
+			'src/styles/comic.css'
 		],
 		dist: './dist', 
 		mainJs: './src/main.js'

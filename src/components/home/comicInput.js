@@ -69,7 +69,7 @@ var ComicInput = React.createClass({
 								name={this.props.name}
 								value={this.state.text}
 								onChange={this.setTextState} />
-					<button type="submit" value="Next" className="btn btn-primary btn-lg" onClick={this.saveText}>Time to select some characters!</button>
+					<button id="homeButton" type="submit" value="Next" className="btn btn-primary btn-lg" onClick={this.saveText}>Time to select some characters!</button>
 				</div>
 			);
 	}

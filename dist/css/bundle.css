@@ -280,3 +280,9 @@ body {
   font-size: 2.5em;
 }
 
+
+#homeButton {
+	background-color: #09ac7c;
+	background-image: none;
+	border: none;
+}
